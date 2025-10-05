@@ -8,5 +8,5 @@
   style_css.ml
   (progn
    (echo "let contents = {|")
-   (cat resources/style.css)
+   (cat resources/style.min.css)
    (echo "|}"))))
