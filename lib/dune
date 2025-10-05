@@ -1,3 +1,5 @@
 (library
  (name bearbeer)
- (libraries tyxml omd frontmatter))
+ (libraries tyxml omd frontmatter yaml)
+ (preprocess
+  (pps ppx_deriving_yaml)))

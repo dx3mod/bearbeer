@@ -25,7 +25,10 @@ module Make (O : PageOptions) = struct
   let index ?(links = []) contents =
     let open Html in
     let nav_links =
-      List.map (fun (title, url) -> a ~a:[ a_href url ] [ txt title ]) links
+      List.map
+        (fun ({ title; url } : Blog_config.link) ->
+          a ~a:[ a_href url ] [ txt title ])
+        links
     in
 
     let contents_html =
