@@ -1,0 +1,3 @@
+(library
+ (name frontmatter)
+ (libraries yaml angstrom))

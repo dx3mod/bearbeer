@@ -1,4 +1,12 @@
 (executable
  (name main)
  (public_name bearbeer)
- (libraries ))
+ (libraries bearbeer dream tyxml))
+
+(rule
+ (with-stdout-to
+  style_css.ml
+  (progn
+   (echo "let contents = {|")
+   (cat resources/style.css)
+   (echo "|}"))))

@@ -1,0 +1,3 @@
+(library
+ (name bearbeer)
+ (libraries tyxml omd frontmatter))

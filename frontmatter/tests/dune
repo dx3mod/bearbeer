@@ -1,0 +1,5 @@
+(test
+ (name basic)
+ (libraries alcotest frontmatter)
+ (preprocess
+  (pps ppx_deriving_yaml)))
