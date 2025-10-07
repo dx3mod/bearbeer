@@ -1,40 +1,69 @@
-let html_to_string html = Format.asprintf "%a" (Tyxml.Html.pp ()) html
-
+(* fucked singleton  *)
 module Cli_args = struct
   let root_dir = ref "."
 
   let speclist =
     [ ("--root-dir", Arg.Set_string root_dir, "Path to root of project") ]
+
+  let parse () = Arg.parse speclist ignore ""
 end
 
-let () =
-  Arg.parse Cli_args.speclist ignore "";
+module Make_loader (Opts : sig
+  val root_dir : string
+  (** Path to project directory. *)
+end) =
+struct
+  open Opts
 
-  let config =
+  let load_blog_page ~of_string filename =
+    In_channel.with_open_text (Filename.concat root_dir filename)
+    @@ Fun.compose of_string In_channel.input_all
+
+  let load_index_page =
+    load_blog_page ~of_string:Bearbeer.Blog_pages.Page.of_string
+
+  and _load_post_page =
+    load_blog_page ~of_string:Bearbeer.Blog_pages.Post_page.of_string
+
+  let load_project_config filename =
     In_channel.with_open_text
-      Filename.(concat !Cli_args.root_dir "bearbeer.yml")
+      (Filename.concat root_dir filename)
       Bearbeer.Blog_config.of_channel
     |> Result.fold ~ok:Fun.id ~error:(fun (`Msg m) -> failwith m)
+end
+
+let html_to_string = Format.asprintf "%a" @@ Tyxml.Html.pp ()
+
+let () =
+  Cli_args.parse ();
+
+  let module Loader = Make_loader (struct
+    let root_dir = !Cli_args.root_dir
+  end) in
+  let blog_config = Loader.load_project_config "bearbeer.yml" in
+
+  let module Html_pages_builder = Bearbeer.Html_pages_builder.Make (struct
+    let title = blog_config.title
+    and language = blog_config.language
+    and footer = Tyxml.Html.div []
+    and basic_url = blog_config.base_url
+  end) in
+  let index_page =
+    (Loader.load_index_page "index.md").contents
+    |> Html_pages_builder.make_index_page ~links:blog_config.links
+    |> html_to_string
   in
 
-  let module Pages = Bearbeer.Pages.Make (struct
-    let title = config.title
-    and language = config.language
-    and footer = Tyxml.Html.div []
-    and basic_url = config.base_url
-  end) in
+  let return_static_css_file _ =
+    Lwt.return
+    @@ Dream.response ~status:`OK
+         ~headers:[ ("Content-Type", "text/css") ]
+         Style_css.contents
+  in
+
   Dream.run @@ Dream.logger
   @@ Dream.router
        [
-         Dream.get "/" (fun _ ->
-             Dream.html @@ html_to_string
-             @@ Pages.index ~links:config.links
-             @@ In_channel.with_open_text
-                  Cli_args.(!root_dir ^ "/index.md")
-                  In_channel.input_all);
-         ( Dream.get "/static/style.css" @@ fun _ ->
-           Lwt.return
-           @@ Dream.response ~status:`OK
-                ~headers:[ ("Content-Type", "text/css") ]
-                Style_css.contents );
+         Dream.get "/" (fun _ -> Dream.html index_page);
+         Dream.get "/static/style.css" return_static_css_file;
        ]
