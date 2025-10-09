@@ -51,6 +51,7 @@ let () =
   let index_page =
     (Loader.load_index_page "index.md").contents
     |> Html_pages_builder.make_index_page ~links:blog_config.links
+         ?avatar_src:blog_config.avatar
     |> html_to_string
   in
 
@@ -58,7 +59,7 @@ let () =
     Lwt.return
     @@ Dream.response ~status:`OK
          ~headers:[ ("Content-Type", "text/css") ]
-         Style_css.contents
+         Theme.style_css
   in
 
   Dream.run @@ Dream.logger

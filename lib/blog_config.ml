@@ -3,6 +3,7 @@ type link = { title : string; url : string } [@@deriving of_yaml]
 type t = {
   title : string;
   language : string; [@default "en"]
+  avatar : string option; [@default None]
   base_url : string; [@default ""]
   links : link list; [@default []]
 }

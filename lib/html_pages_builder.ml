@@ -18,10 +18,16 @@ struct
     Html.(
       html
         ~a:[ a_lang O.language ]
-        (head (title (txt O.title)) [ style_css_link ])
+        (head
+           (title (txt O.title))
+           [
+             style_css_link;
+             Unsafe.data
+               {|  <meta name="viewport" content="width=device-width, initial-scale=1.0" />|};
+           ])
         (body [ contents; O.footer ]))
 
-  let make_index_page ?(links = []) contents =
+  let make_index_page ?(links = []) ?(avatar_src = "z") contents =
     let open Html in
     let nav_links =
       List.map
@@ -35,7 +41,13 @@ struct
          [
            header
              [
-               h1 [ txt O.title ];
+               div
+                 [
+                   img ~src:avatar_src ~alt:"user's photo"
+                     ~a:[ a_style "border-radius: 10px; width: 20%" ]
+                     ();
+                   h1 [ txt O.title ];
+                 ];
                nav nav_links;
                Unsafe.data @@ Omd.to_html contents;
              ];

@@ -5,8 +5,8 @@
 
 (rule
  (with-stdout-to
-  style_css.ml
+  theme.ml
   (progn
-   (echo "let contents = {|")
-   (cat resources/style.min.css)
+   (echo "let style_css = {|")
+   (cat resources/theme.css)
    (echo "|}"))))
