@@ -30,6 +30,11 @@ struct
       (Filename.concat root_dir filename)
       Bearbeer.Blog_config.of_channel
     |> Result.fold ~ok:Fun.id ~error:(fun (`Msg m) -> failwith m)
+
+  let load_html filename =
+    In_channel.with_open_text
+      (Filename.concat root_dir filename)
+      In_channel.input_all
 end
 
 let html_to_string = Format.asprintf "%a" @@ Tyxml.Html.pp ()
@@ -42,10 +47,17 @@ let () =
   end) in
   let blog_config = Loader.load_project_config "bearbeer.yml" in
 
+  let footer =
+    try
+      let open Tyxml.Html in
+      footer [ Unsafe.data @@ Loader.load_html "footer.html" ]
+    with Sys_error _ -> Tyxml.Html.div []
+  in
+
   let module Html_pages_builder = Bearbeer.Html_pages_builder.Make (struct
     let title = blog_config.title
     and language = blog_config.language
-    and footer = Tyxml.Html.div []
+    and footer = footer
     and basic_url = blog_config.base_url
   end) in
   let index_page =
