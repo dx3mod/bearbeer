@@ -1,8 +1,10 @@
 module Make (O : sig
   val title : string
   val language : string
-  val footer : [> Html_types.flow5 ] Tyxml.Html.elt
   val basic_url : string
+  val footer : [> `Div | `Footer ] Tyxml_html.elt
+  val head : Html_types.head_content_fun Tyxml_html.elt list
+  val body : Html_types.body_content_fun Tyxml_html.elt list
 end) =
 struct
   open Tyxml
@@ -10,22 +12,18 @@ struct
   let with_basic_url = Printf.sprintf "%s/%s" O.basic_url
 
   let make_basic_page contents =
-    let style_css_link =
-      Html.(
-        link ~rel:[ `Stylesheet ] ~href:(with_basic_url "static/style.css") ())
-    in
+    let open Html in
+    let head_section =
+      head (title @@ txt O.title)
+      @@ [
+           link ~rel:[ `Stylesheet ]
+             ~href:(with_basic_url "static/style.css")
+             ();
+         ]
+      @ O.head
+    and body_section = body @@ [ contents; O.footer ] @ O.body in
 
-    Html.(
-      html
-        ~a:[ a_lang O.language ]
-        (head
-           (title (txt O.title))
-           [
-             style_css_link;
-             Unsafe.data
-               {|  <meta name="viewport" content="width=device-width, initial-scale=1.0" />|};
-           ])
-        (body [ contents; O.footer ]))
+    html ~a:[ a_lang O.language ] head_section body_section
 
   let make_index_page ?(links = []) ?(avatar_src = "z") contents =
     let open Html in

@@ -58,6 +58,25 @@ let () =
     let title = blog_config.title
     and language = blog_config.language
     and footer = footer
+
+    and head =
+      [
+        Tyxml.Html.Unsafe.data
+          {|<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/night-owl.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+
+|};
+      ]
+
+    and body =
+      [
+        Tyxml.Html.Unsafe.data
+          {|
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/ocaml.min.js"></script>
+<script>hljs.highlightAll();</script>
+|};
+      ]
+
     and basic_url = blog_config.base_url
   end) in
   let index_page =

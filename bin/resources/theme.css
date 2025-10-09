@@ -118,9 +118,14 @@ img {
 }
 
 code {
-    padding: 10px;
+    padding: 3px;
     border-radius: 3px;
+}
+
+pre code {
     background: #011e25;
+    padding: 10px;
+    display: block;
 }
 
 blockquote {
