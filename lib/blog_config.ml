@@ -10,4 +10,6 @@ type t = {
 [@@deriving of_yaml]
 
 let of_channel ic =
-  In_channel.input_all ic |> Yaml.of_string |> Fun.flip Result.bind of_yaml
+  In_channel.input_all ic |> Yaml.of_string
+  |> Fun.flip Result.bind of_yaml
+  |> Result.fold ~ok:Fun.id ~error:(fun (`Msg msg) -> failwith msg)
