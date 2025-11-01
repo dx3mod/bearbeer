@@ -23,6 +23,7 @@ let () =
 
   let blog_config =
     In_channel.with_open_text "bearbeer.yml" Bearbeer.Blog_config.of_channel
+    |> Result.get_or_failwith
   in
 
   let footer =
@@ -47,10 +48,12 @@ let () =
     and footer = footer
 
     and head =
-      Option.fold current_theme.highlight_themes.light ~none:[]
-        ~some:(fun name -> [ link_highlight_theme ~scheme:"light" name ])
-      @ Option.fold current_theme.highlight_themes.dark ~none:[]
-          ~some:(fun name -> [ link_highlight_theme ~scheme:"dark" name ])
+      Option.map_or ~default:[]
+        (fun name -> [ link_highlight_theme ~scheme:"light" name ])
+        current_theme.highlight_themes.light
+      @ Option.map_or ~default:[]
+          (fun name -> [ link_highlight_theme ~scheme:"dark" name ])
+          current_theme.highlight_themes.dark
       @ [
           Tyxml.Html.Unsafe.data
             {|<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>|};

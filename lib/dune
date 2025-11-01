@@ -1,5 +1,10 @@
 (library
  (public_name bearbeer)
- (libraries tyxml omd frontmatter yaml)
+ (libraries containers tyxml omd frontmatter yaml)
  (preprocess
   (pps ppx_deriving_yaml)))
+
+(env
+ (_
+  (flags
+   (:standard -open Containers))))

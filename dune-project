@@ -17,4 +17,4 @@
  (name bearbeer)
  (synopsis "hackable blogging engine")
  (description "Minimal boilerplate blogging engine")
- (depends ocaml dream omd tyxml yaml ppx_deriving_yaml))
+ (depends ocaml containers dream omd tyxml yaml ppx_deriving_yaml))

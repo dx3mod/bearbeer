@@ -3,6 +3,11 @@
  (public_name bearbeer)
  (libraries bearbeer dream tyxml))
 
+(env
+ (_
+  (flags
+   (:standard -open Containers))))
+
 (rule
  (with-stdout-to
   resource_style_css.ml

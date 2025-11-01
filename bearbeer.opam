@@ -10,6 +10,7 @@ bug-reports: "https://github.com/dx3mod/bearbeer/issues"
 depends: [
   "dune" {>= "3.20"}
   "ocaml"
+  "containers"
   "dream"
   "omd"
   "tyxml"

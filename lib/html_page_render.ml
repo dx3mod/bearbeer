@@ -46,7 +46,7 @@ module Make (Opts : Options) = struct
          [
            header
              [
-               div [ Option.fold avatar_src ~none:(div []) ~some:img_avatar ];
+               div [ Option.map_or ~default:(div []) img_avatar avatar_src ];
                h1 ~a:[ a_style "margin-bottom: 0;" ] [ txt Opts.title ];
              ];
            nav nav_links;

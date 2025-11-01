@@ -1,10 +1,10 @@
 type t = { attrs : Yaml.value; contents : Omd.doc }
 
 let of_string str =
-  let attrs, contents = Frontmatter.of_string str |> Result.get_ok in
+  let attrs, contents = Frontmatter.of_string str |> Result.get_or_failwith in
 
   {
-    attrs = Option.fold ~some:Fun.id ~none:(`O []) attrs;
+    attrs = Option.get_or ~default:(`O []) attrs;
     contents = Omd.of_string contents;
   }
 
