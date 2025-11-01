@@ -18,8 +18,8 @@ let of_string input =
   | Ok (attrs, end_offset) ->
       Yaml.of_string attrs
       |> Result.map (fun attrs ->
-             ( Some attrs,
-               String.sub input end_offset (String.length input - end_offset) ))
+          ( Some attrs,
+            String.sub input end_offset (String.length input - end_offset) ))
       |> Result.map_error (function `Msg msg -> msg)
   | Error _ -> Ok (None, input)
 
