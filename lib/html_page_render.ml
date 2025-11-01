@@ -26,7 +26,24 @@ module Make (Opts : Options) = struct
 
     html ~a:[ a_lang Opts.language ] head_section body_section
 
-  let render_index_page ?(links = []) ?avatar_src md_page =
+  let render_posts_list (post_pages : Post_page.t list) =
+    let open Html in
+    let title_of_post_page (post_page : Post_page.t) = post_page.title in
+
+    div
+      [
+        ul
+        @@ List.map
+             (fun post_page ->
+               li
+                 [
+                   p [ b [ txt @@ title_of_post_page post_page ] ];
+                   p ~a:[ a_style "color: gray;" ] [ txt post_page.description ];
+                 ])
+             post_pages;
+      ]
+
+  let render_index_page ?(links = []) ~posts ?avatar_src md_page =
     let open Html in
     let nav_links =
       List.map
@@ -51,5 +68,8 @@ module Make (Opts : Options) = struct
              ];
            nav nav_links;
            Unsafe.data @@ Omd.to_html md_page;
+           br ();
+           h3 [ txt "Posts" ];
+           render_posts_list posts;
          ]
 end

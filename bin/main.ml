@@ -42,6 +42,13 @@ let () =
       }
   in
 
+  let posts =
+    Bearbeer.Posts_loader.load_post_pages ~root_dir:blog_config.posts_dir
+    |> Result.get_lazy (fun err ->
+        failwith
+        @@ Format.to_string Bearbeer.Posts_loader.Load_page_error.pp err)
+  in
+
   let module Html_page_render = Bearbeer.Html_page_render.Make (struct
     let title = blog_config.title
     and language = blog_config.language
@@ -73,7 +80,7 @@ let () =
   (* RENDERED PAGES *)
   let rendered_index_page =
     html_to_string
-    @@ Html_page_render.render_index_page ~links:blog_config.links
+    @@ Html_page_render.render_index_page ~links:blog_config.links ~posts
          ?avatar_src:blog_config.avatar
     @@ In_channel.(with_open_text "index.md" Bearbeer.Markdown_page.of_channel)
          .contents
