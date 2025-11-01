@@ -10,6 +10,12 @@ end
 
 let html_to_string = Format.asprintf "%a" @@ Tyxml.Html.pp ()
 
+let link_highlight_theme ~scheme name =
+  Tyxml.Html.Unsafe.data
+  @@ Printf.sprintf
+       {|<link rel="stylesheet" media="(prefers-color-scheme: %s)" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/%s.min.css">|}
+       scheme name
+
 let () =
   Cli_args.parse ();
 
@@ -27,19 +33,28 @@ let () =
     with Sys_error _ -> Tyxml.Html.div []
   in
 
+  let current_theme =
+    Bearbeer.Theme.
+      {
+        plain_css = Resource_github_theme.plain;
+        highlight_themes = { dark = Some "github-dark"; light = Some "github" };
+      }
+  in
+
   let module Html_page_render = Bearbeer.Html_page_render.Make (struct
     let title = blog_config.title
     and language = blog_config.language
     and footer = footer
 
     and head =
-      [
-        Tyxml.Html.Unsafe.data
-          {|<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/night-owl.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-
-|};
-      ]
+      Option.fold current_theme.highlight_themes.light ~none:[]
+        ~some:(fun name -> [ link_highlight_theme ~scheme:"light" name ])
+      @ Option.fold current_theme.highlight_themes.dark ~none:[]
+          ~some:(fun name -> [ link_highlight_theme ~scheme:"dark" name ])
+      @ [
+          Tyxml.Html.Unsafe.data
+            {|<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>|};
+        ]
 
     and body =
       [
@@ -61,12 +76,14 @@ let () =
          .contents
   in
 
+  let style_css = current_theme.plain_css ^ Resource_style_css.plain in
+
   (* DREAM APP *)
   let return_static_css_file _ =
     Lwt.return
     @@ Dream.response ~status:`OK
          ~headers:[ ("Content-Type", "text/css") ]
-         Theme.style_css
+         style_css
   in
 
   Dream.run @@ Dream.logger

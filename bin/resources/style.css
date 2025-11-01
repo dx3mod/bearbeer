@@ -19,34 +19,6 @@ a {
     text-decoration: none;
 }
 
-:root {
-    --width: 720px;
-    --font-main:
-        ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
-        "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    --font-secondary:
-        ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
-        "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    --font-scale: 1em;
-    --background-color: #fff;
-    --heading-color: #222;
-    --text-color: #444;
-    --link-color: #3273dc;
-    --visited-color: #8b6fcb;
-    --blockquote-color: #222;
-}
-
-@media (prefers-color-scheme: dark) {
-    :root {
-        --background-color: #01242e;
-        --heading-color: #eee;
-        --text-color: #ddd;
-        --link-color: #8cc2dd;
-        --visited-color: #8b6fcb;
-        --blockquote-color: #ccc;
-    }
-}
-
 body {
     font-family: var(--font-secondary);
     font-size: var(--font-scale);
@@ -120,6 +92,7 @@ img {
 code {
     padding: 3px;
     border-radius: 3px;
+    font-size: small;
 }
 
 pre code {

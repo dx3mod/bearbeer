@@ -5,8 +5,16 @@
 
 (rule
  (with-stdout-to
-  theme.ml
+  resource_style_css.ml
   (progn
-   (echo "let style_css = {|")
-   (cat resources/theme.css)
+   (echo "let plain = {|")
+   (cat resources/style.css)
+   (echo "|}"))))
+
+(rule
+ (with-stdout-to
+  resource_github_theme.ml
+  (progn
+   (echo "let plain = {|")
+   (cat resources/theme.github.css)
    (echo "|}"))))
