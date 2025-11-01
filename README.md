@@ -1,3 +1,5 @@
+<img width="170px" src="https://gist.githubusercontent.com/dx3mod/a85c97ccc27c3eed1a8ab1c2d9b69851/raw/88b521cd9eef6b429589d63fc60bc07f4cd4d4c4/bearbeer.svg">
+
 # bearbeer
 
 It's minimal boilerplate blogging engine inspired by [deno_blog] and
