@@ -26,7 +26,7 @@ module Make (Opts : Options) = struct
 
     html ~a:[ a_lang Opts.language ] head_section body_section
 
-  let render_index_page ?(links = []) ?(avatar_src = "z") md_page =
+  let render_index_page ?(links = []) ?avatar_src md_page =
     let open Html in
     let nav_links =
       List.map
@@ -35,20 +35,21 @@ module Make (Opts : Options) = struct
         links
     in
 
+    let img_avatar src =
+      img ~src ~alt:"user's photo"
+        ~a:[ a_style "border-radius: 10px; width: 20%" ]
+        ()
+    in
+
     render_page
     @@ div
          [
            header
              [
-               div
-                 [
-                   img ~src:avatar_src ~alt:"user's photo"
-                     ~a:[ a_style "border-radius: 10px; width: 20%" ]
-                     ();
-                   h1 [ txt Opts.title ];
-                 ];
-               nav nav_links;
-               Unsafe.data @@ Omd.to_html md_page;
+               div [ Option.fold avatar_src ~none:(div []) ~some:img_avatar ];
+               h1 [ txt Opts.title ];
              ];
+           nav nav_links;
+           Unsafe.data @@ Omd.to_html md_page;
          ]
 end
