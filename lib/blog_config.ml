@@ -6,6 +6,7 @@ type t = {
   avatar : string option; [@default None]
   base_url : string; [@default ""]
   links : link list; [@default []]
+  posts_dir : string; [@default "posts"]
 }
 [@@deriving of_yaml]
 
