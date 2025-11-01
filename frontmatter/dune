@@ -1,3 +1,4 @@
 (library
  (name frontmatter)
+ (package bearbeer)
  (libraries yaml angstrom))
