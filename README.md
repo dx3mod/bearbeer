@@ -2,8 +2,10 @@
 
 # bearbeer
 
-It's minimal boilerplate blogging engine inspired by [deno_blog] and
-[Bear Blog], written in [OCaml]. 
+It's a minimal boilerplate blogging engine for programmers written in [OCaml]. It is designed to be lean, mean, and hackable for self-hosting purposes.
+Was inspired by [deno_blog] and [Bear Blog] projects.
+
+If you want to add something, just fork it and go drink beer.
 
 ## Installation
 
