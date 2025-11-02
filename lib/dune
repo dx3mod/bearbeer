@@ -1,6 +1,14 @@
 (library
  (public_name bearbeer)
- (libraries containers tyxml omd frontmatter yaml)
+ (libraries
+  ;  external
+  containers
+  tyxml
+  omd
+  yaml
+  ;  local
+  frontmatter
+  date_time)
  (preprocess
   (pps ppx_deriving_yaml)))
 
