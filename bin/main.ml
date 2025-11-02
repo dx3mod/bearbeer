@@ -87,7 +87,8 @@ let rec main root_dir =
 and guard_error_to_string r =
   let handle_load_page_error fmt = function
     | `Post_not_have_title -> Format.fprintf fmt "the post not have a title"
-    | `Yaml_parse_error msg -> Format.pp_print_string fmt msg
+    | `Yaml_parse_error msg | `Invalid_date_value msg ->
+        Format.pp_print_string fmt msg
   in
 
   let aux = function

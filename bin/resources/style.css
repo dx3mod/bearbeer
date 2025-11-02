@@ -44,6 +44,7 @@ h4,
 h5,
 h6 {
     font-family: var(--font-main);
+    text-align: left;
 }
 
 code,
@@ -135,9 +136,16 @@ ul.posts-list li a:visited {
     color: var(--visited-color);
 }
 
-ul.posts-list li a:visited {
+ul.posts-list li a {
     color: var(--link-color);
 }
+
+ul.posts-list li small {
+    font-size: x-small;
+    color: gray;
+    padding-left: 0.7em;
+}
+
 
 ul.posts-list {
     list-style-type: none;

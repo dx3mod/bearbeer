@@ -15,7 +15,11 @@ let render_page ~settings contents =
   let open Tyxml.Html in
   let head_section =
     head (title @@ txt settings.title)
-    @@ [ link_css @@ settings.basic_url ^ "static/style.css" ]
+    @@ [
+         link_css @@ settings.basic_url ^ "static/style.css";
+         Unsafe.data
+           {| <meta name="viewport" content="width=device-width, initial-scale=1.0"> |};
+       ]
     @ settings.in_head
   and body_section =
     body @@ [ contents ] @ settings.after_body @ [ footer settings.footer ]
@@ -32,7 +36,16 @@ type index_page_settings = {
 
 let render_posts_list (post_pages : Post_page.t list) =
   let open Tyxml.Html in
-  let title_of_post_page (post_page : Post_page.t) = post_page.title in
+  let[@inline] title_of_post_page (post_page : Post_page.t) = post_page.title in
+  let[@inline] date_of_post_page (post_page : Post_page.t) =
+    Format.to_string Date_time.pp post_page.date
+  in
+
+  let post_pages =
+    List.sort
+      (fun (a : Post_page.t) b -> Date_time.compare a.date b.date)
+      post_pages
+  in
 
   div
     [
@@ -50,6 +63,7 @@ let render_posts_list (post_pages : Post_page.t list) =
                            ~a:[ a_href "/" ]
                            [ txt @@ title_of_post_page post_page ];
                        ];
+                     small [ txt (date_of_post_page post_page) ];
                    ];
                  p
                    ~a:[ a_style "color: gray; margin-top:0;" ]
@@ -83,7 +97,7 @@ let render_index_page_contents ~settings markdown_contents =
       nav nav_links;
       Unsafe.data @@ Omd.to_html markdown_contents;
       br ();
-      hr ();
-      (* h3 [ txt "Posts" ]; *)
+      (* hr (); *)
+      h3 [ txt "Posts" ];
       render_posts_list settings.posts;
     ]
