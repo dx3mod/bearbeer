@@ -1,7 +1,7 @@
 (executable
  (name main)
  (public_name bearbeer)
- (libraries bearbeer dream tyxml))
+ (libraries bearbeer dream tyxml cmdliner))
 
 (env
  (_

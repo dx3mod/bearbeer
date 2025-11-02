@@ -1,38 +1,8 @@
-(* fucked singleton  *)
-module Cli_args = struct
-  let root_dir = ref "."
-
-  let speclist =
-    [ ("--root-dir", Arg.Set_string root_dir, "Path to root of project") ]
-
-  let parse () = Arg.parse speclist ignore ""
-end
-
-let html_to_string = Format.asprintf "%a" @@ Tyxml.Html.pp ()
-
-let link_highlight_theme ~scheme name =
-  Tyxml.Html.Unsafe.data
-  @@ Printf.sprintf
-       {|<link rel="stylesheet" media="(prefers-color-scheme: %s)" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/%s.min.css">|}
-       scheme name
-
-let () =
-  Cli_args.parse ();
-
-  Sys.chdir !Cli_args.root_dir;
-
-  let blog_config =
-    In_channel.with_open_text "bearbeer.yml" Bearbeer.Blog_config.of_channel
-    |> Result.get_or_failwith
-  in
-
-  let footer =
-    try
-      let open Tyxml.Html in
-      footer
-        [ (Unsafe.data @@ In_channel.(with_open_text "footer.html" input_all)) ]
-    with Sys_error _ -> Tyxml.Html.div []
-  in
+let rec main root_dir =
+  let open Result in
+  guard_error_to_string
+  @@
+  let+ blog_project = Bearbeer.Project_loader.load ~root_dir in
 
   let current_theme =
     Bearbeer.Theme.
@@ -42,63 +12,85 @@ let () =
       }
   in
 
-  let posts =
-    Bearbeer.Posts_loader.load_post_pages ~root_dir:blog_config.posts_dir
-    |> Result.get_lazy (fun err ->
-        failwith
-        @@ Format.to_string Bearbeer.Posts_loader.Load_page_error.pp err)
+  let link_highlight_theme ~scheme name =
+    Tyxml.Html.Unsafe.data
+    @@ Printf.sprintf
+         {|<link rel="stylesheet" media="(prefers-color-scheme: %s)" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/%s.min.css">|}
+         scheme name
   in
 
-  let module Html_page_render = Bearbeer.Html_page_render.Make (struct
-    let title = blog_config.title
-    and language = blog_config.language
-    and footer = footer
-
-    and head =
-      Option.map_or ~default:[]
-        (fun name -> [ link_highlight_theme ~scheme:"light" name ])
-        current_theme.highlight_themes.light
-      @ Option.map_or ~default:[]
-          (fun name -> [ link_highlight_theme ~scheme:"dark" name ])
-          current_theme.highlight_themes.dark
-      @ [
-          Tyxml.Html.Unsafe.data
-            {|<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>|};
-        ]
-
-    and body =
-      [
-        Tyxml.Html.Unsafe.data
-          {|
+  let page_settings =
+    Bearbeer.Html_page_render.
+      {
+        title = blog_project.config.title;
+        language = blog_project.config.language;
+        basic_url = "";
+        footer = [];
+        in_head =
+          Option.map_or ~default:[]
+            (fun name -> [ link_highlight_theme ~scheme:"light" name ])
+            current_theme.highlight_themes.light
+          @ Option.map_or ~default:[]
+              (fun name -> [ link_highlight_theme ~scheme:"dark" name ])
+              current_theme.highlight_themes.dark
+          @ [
+              Tyxml.Html.Unsafe.data
+                {|<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>|};
+            ];
+        after_body =
+          [
+            Tyxml.Html.Unsafe.data
+              {|
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/ocaml.min.js"></script>
 <script>hljs.highlightAll();</script>
 |};
-      ]
-
-    and basic_url = blog_config.base_url
-  end) in
-  (* RENDERED PAGES *)
-  let rendered_index_page =
-    html_to_string
-    @@ Html_page_render.render_index_page ~links:blog_config.links ~posts
-         ?avatar_src:blog_config.avatar
-    @@ In_channel.(with_open_text "index.md" Bearbeer.Markdown_page.of_channel)
-         .contents
+          ];
+      }
   in
 
-  let style_css = current_theme.plain_css ^ Resource_style_css.plain in
-
-  (* DREAM APP *)
-  let return_static_css_file _ =
-    Lwt.return
-    @@ Dream.response ~status:`OK
-         ~headers:[ ("Content-Type", "text/css") ]
-         style_css
+  let index_page_settings =
+    Bearbeer.Html_page_render.
+      {
+        title = page_settings.title;
+        links = blog_project.config.links;
+        avatar_src = blog_project.config.avatar;
+        posts = blog_project.posts;
+      }
   in
+
+  let index_page =
+    let open Bearbeer.Html_page_render in
+    render_page ~settings:page_settings
+    @@ render_index_page_contents ~settings:index_page_settings
+         blog_project.index_page.contents
+  in
+
+  let return_static_css_file =
+    let style_css = current_theme.plain_css ^ Resource_style_css.plain in
+
+    fun _ ->
+      Lwt.return
+      @@ Dream.response ~status:`OK
+           ~headers:[ ("Content-Type", "text/css") ]
+           style_css
+  in
+
+  let html_to_string html = Format.asprintf "%a" (Tyxml.Html.pp ()) html in
 
   Dream.run @@ Dream.logger
   @@ Dream.router
        [
-         Dream.get "/" (fun _ -> Dream.html rendered_index_page);
+         Dream.get "/" (fun _ -> Dream.html @@ html_to_string index_page);
          Dream.get "/static/style.css" return_static_css_file;
        ]
+
+and guard_error_to_string r =
+  let aux = function
+    | `Msg msg -> failwith msg
+    | `Load_page_error (filename, reason) ->
+        Printf.sprintf "file %s: %s" filename reason
+    | _ -> "something went wrong"
+  in
+  Result.map_err aux r
+
+let () = exit @@ Cmdliner.Cmd.eval_result @@ Cli.cmd main
