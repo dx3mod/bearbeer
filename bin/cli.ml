@@ -8,5 +8,5 @@ let root_dir_arg =
 
 let cmd handle =
   let doc = "blogging for drunks" in
-  let info = Cmd.info "bearbeer" ~doc in
+  let info = Cmd.info "bearbeer" ~doc ~version:"upstream" in
   Cmd.v info Term.(const handle $ root_dir_arg)

@@ -1,4 +1,4 @@
-type t = string option * string
+type 'attrs t = 'attrs option * string
 
 let of_string input =
   let front_matter_raw_parser =
