@@ -41,8 +41,19 @@ let render_posts_list (post_pages : Post_page.t list) =
            (fun post_page ->
              li
                [
-                 p [ b [ txt @@ title_of_post_page post_page ] ];
-                 p ~a:[ a_style "color: gray;" ] [ txt post_page.description ];
+                 p
+                   ~a:[ a_style "margin-bottom:0;" ]
+                   [
+                     b
+                       [
+                         a
+                           ~a:[ a_href "/" ]
+                           [ txt @@ title_of_post_page post_page ];
+                       ];
+                   ];
+                 p
+                   ~a:[ a_style "color: gray; margin-top:0;" ]
+                   [ txt post_page.description ];
                ])
            post_pages;
     ]
@@ -72,6 +83,7 @@ let render_index_page_contents ~settings markdown_contents =
       nav nav_links;
       Unsafe.data @@ Omd.to_html markdown_contents;
       br ();
-      h3 [ txt "Posts" ];
+      hr ();
+      (* h3 [ txt "Posts" ]; *)
       render_posts_list settings.posts;
     ]

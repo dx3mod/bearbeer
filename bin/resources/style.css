@@ -129,19 +129,17 @@ footer {
     overflow-x: auto;
 }
 
-ul.blog-posts {
-    list-style-type: none;
-    padding: unset;
-}
 
-ul.blog-posts li {
-    display: flex;
-}
 
-ul.blog-posts li span {
-    flex: 0 0 130px;
-}
-
-ul.blog-posts li a:visited {
+ul.posts-list li a:visited {
     color: var(--visited-color);
+}
+
+ul.posts-list li a:visited {
+    color: var(--link-color);
+}
+
+ul.posts-list {
+    list-style-type: none;
+    padding-left: 0;
 }
