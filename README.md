@@ -7,6 +7,14 @@ Was inspired by [deno_blog] and [Bear Blog] projects.
 
 If you want to add something, just fork it and go drink beer.
 
+**Features**
+
+- Opinionated style and project organization are done and done well
+- Dead simple to use and configure with the help of lovely documentation
+- Self-hosted and self-managed web server, or a static bundle
+- Single static binary for easy deployment and packaging of your system
+- And, yeah, it's written in OCaml, which must be the reason why.
+
 ## Installation
 
 Now you can get only upstream (developer branch) version using OPAM, building
