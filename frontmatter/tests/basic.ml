@@ -11,7 +11,10 @@ end
 (* let post_testable = Alcotest.testable  (Fmt.record [Fmt.string; Fmt.list Fmt.string]) (fun expected) *)
 
 let test_parse_post input () =
-  let result_post = Frontmatter.of_string_conv ~p:Post.of_yaml input in
+  let result_post =
+    Frontmatter.of_string_yaml_conv Post.of_yaml input
+    |> Result.map_error (fun (`Yaml_parse_error m | `Msg m) -> m)
+  in
 
   Alcotest.(check @@ result (pair (option Post.testable) string) string)
     "equal"

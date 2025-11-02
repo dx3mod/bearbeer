@@ -3,7 +3,6 @@ let load_project_config filename =
 
 let load_index_page filename =
   In_channel.with_open_text filename Markdown_page.of_channel
-  |> Result.map_err (fun m -> `Msg m)
 
 let load ~root_dir =
   let open Result in

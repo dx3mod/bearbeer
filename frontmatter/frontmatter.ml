@@ -1,3 +1,5 @@
+type t = string option * string
+
 let of_string input =
   let front_matter_raw_parser =
     let open Angstrom in
@@ -9,27 +11,23 @@ let of_string input =
     return (value |> List.to_seq |> String.of_seq, end_offset)
   in
 
-  let result =
-    Angstrom.(parse_string ~consume:Consume.Prefix front_matter_raw_parser)
-      input
-  in
+  Angstrom.(parse_string ~consume:Consume.Prefix front_matter_raw_parser) input
+  |> Result.fold ~error:(Fun.const (None, input))
+       ~ok:begin fun (frontmatter, end_offset) ->
+       ( Some frontmatter,
+         String.sub input end_offset (String.length input - end_offset) )
+       end
 
-  match result with
-  | Ok (attrs, end_offset) ->
-      Yaml.of_string attrs
-      |> Result.map (fun attrs ->
-          ( Some attrs,
-            String.sub input end_offset (String.length input - end_offset) ))
-      |> Result.map_error (function `Msg msg -> msg)
-  | Error _ -> Ok (None, input)
-
-let of_string_conv ~p input =
+let of_string_yaml input =
   match of_string input with
-  | Error e -> Error e
-  | Ok (attrs, text) -> (
-      match attrs with
-      | None -> Ok (None, text)
-      | Some attrs -> (
-          match p attrs with
-          | Ok attrs -> Ok (Some attrs, text)
-          | Error (`Msg msg) -> Error msg))
+  | None, contents -> Ok (None, contents)
+  | Some frontmatter, contents ->
+      Yaml.of_string frontmatter
+      |> Result.map_error (fun (`Msg m) -> `Yaml_parse_error m)
+      |> Result.map (fun frontmatter -> (Some frontmatter, contents))
+
+let of_string_yaml_conv p input =
+  Result.bind (of_string_yaml input) @@ fun (attrs, contents) ->
+  match attrs with
+  | None -> Ok (None, contents)
+  | Some attrs -> p attrs |> Result.map (fun attrs -> (Some attrs, contents))

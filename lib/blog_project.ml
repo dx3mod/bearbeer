@@ -11,10 +11,9 @@ module Config = struct
   }
   [@@deriving of_yaml]
 
-  let of_channel ic : (t, [> `Msg of string ]) result =
+  let of_channel ic =
     In_channel.input_all ic |> Yaml.of_string |> Result.flat_map of_yaml
-    (* Hack type system for make `Msg extensible without overhead. *)
-    |> Obj.magic
+    |> Result.map_err (fun (`Msg m) -> `Yaml_parse_error m)
 end
 
 type t = {

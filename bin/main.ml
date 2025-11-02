@@ -85,10 +85,16 @@ let rec main root_dir =
        ]
 
 and guard_error_to_string r =
+  let handle_load_page_error fmt = function
+    | `Post_not_have_title -> Format.fprintf fmt "the post not have a title"
+    | `Yaml_parse_error msg -> Format.pp_print_string fmt msg
+  in
+
   let aux = function
-    | `Msg msg -> failwith msg
-    | `Load_page_error (filename, reason) ->
-        Printf.sprintf "file %s: %s" filename reason
+    | `Msg msg -> failwith @@ Printf.sprintf "guard_error_to_string: %s" msg
+    | `Load_page_error (filename, err) ->
+        Format.sprintf "at %s file.\nLoad page error:\n\t%a" filename
+          handle_load_page_error err
     | _ -> "something went wrong"
   in
   Result.map_err aux r
