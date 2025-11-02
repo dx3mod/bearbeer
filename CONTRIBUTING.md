@@ -42,3 +42,19 @@ $ git add -A
 $ git commit -m "your pretty changes" 
 $ git push
 ```
+
+## Programming guidelines
+
+This section describes some accepted agreements in the project regarding how to write code.
+
+**Standard library**
+
+To extend the `Stdlib`, we use the [Containers] library, which provides advanced and useful functions for common cases in functional programming.
+
+**Errors handling**
+
+We use monadic error handling by `Result` and `Option` monad. Use exceptions only for panic cases that really crash the program.
+
+If you want to return an error, use polymorphic variants. This is a more composable and elegant way.
+
+[Containers]: https://github.com/c-cube/ocaml-containers
