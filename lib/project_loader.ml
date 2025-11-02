@@ -1,8 +1,10 @@
 let load_project_config filename =
-  In_channel.with_open_text filename Blog_project.Config.of_channel
+  try In_channel.with_open_text filename Blog_project.Config.of_channel
+  with Sys_error msg -> Error (`File_load_error (filename, msg))
 
 let load_index_page filename =
-  In_channel.with_open_text filename Markdown_page.of_channel
+  try In_channel.with_open_text filename Markdown_page.of_channel
+  with Sys_error msg -> Error (`File_load_error (filename, msg))
 
 let load ~root_dir =
   let open Result in

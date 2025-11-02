@@ -96,6 +96,8 @@ and guard_error_to_string r =
     | `Load_page_error (filename, err) ->
         Format.sprintf "at %s file.\nLoad page error:\n\t%a" filename
           handle_load_page_error err
+    | `File_load_error (filename, msg) ->
+        Printf.sprintf "at %s file.\n%s" filename msg
     | _ -> "something went wrong"
   in
   Result.map_err aux r
