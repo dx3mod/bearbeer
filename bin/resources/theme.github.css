@@ -1,7 +1,7 @@
 :root {
     --width: 720px;
     --font-main:
-        ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+        ui-sans-serif, system-ui, sans-serif, "JetBrains Mono", "Apple Color Emoji",
         "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-secondary:
         ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
@@ -10,7 +10,7 @@
     --background-color: #fff;
     --heading-color: #222;
     --text-color: #444;
-    --link-color: #478be6;;
+    --link-color: #478be6;
     --visited-color: #8b6fcb;
     --blockquote-color: #222;
 }

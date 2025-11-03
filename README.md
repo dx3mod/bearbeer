@@ -32,7 +32,34 @@ I appreciate opinionated solutions, be it a formatter, a build system or anythin
 
 ## Quick Start
 
-In progress...
+First, create your blog project allows next organization layout:
+```
+your-first-blog
+├── bearbeer.yml
+├── index.md
+└── posts
+    ├── first.md
+    └── second.md
+```
+
+Configuration file `bearbeer.yml`:
+```yaml
+title: My First Blog
+language: en
+# avatar: <url>
+
+links:
+  - title: github
+    url: https://github.com/user
+  - title: twitter
+    url: https://twitter.com/user
+```
+
+Second, run it!
+
+```console
+$ bearbeer --root-dir ./your-first-blog
+```
 
 ## References
 
