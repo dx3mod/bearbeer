@@ -97,7 +97,7 @@ code {
 }
 
 pre code {
-    background: #011e25;
+    /* background: #0d1117; */
     padding: 10px;
     display: block;
 }

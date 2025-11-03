@@ -3,7 +3,8 @@ let load_post_pages ~root_dir =
     let filename = Filename.concat root_dir filename in
 
     In_channel.with_open_text filename Markdown_page.of_channel
-    |> Result.flat_map Post_page.of_markdown_page
+    |> Result.flat_map
+       @@ Post_page.of_markdown_page ~filename:(Filename.basename filename)
     |> Result.map_err (fun e -> `Load_page_error (filename, e))
   in
 

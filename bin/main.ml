@@ -27,23 +27,21 @@ let rec main root_dir =
         basic_url = "";
         footer = [];
         in_head =
-          Option.map_or ~default:[]
-            (fun name -> [ link_highlight_theme ~scheme:"light" name ])
-            current_theme.highlight_themes.light
+          [
+            Tyxml.Html.Unsafe.data
+              {|<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>|};
+          ]
+          @ Option.map_or ~default:[]
+              (fun name -> [ link_highlight_theme ~scheme:"light" name ])
+              current_theme.highlight_themes.light
           @ Option.map_or ~default:[]
               (fun name -> [ link_highlight_theme ~scheme:"dark" name ])
-              current_theme.highlight_themes.dark
-          @ [
-              Tyxml.Html.Unsafe.data
-                {|<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>|};
-            ];
+              current_theme.highlight_themes.dark;
         after_body =
           [
             Tyxml.Html.Unsafe.data
-              {|
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/ocaml.min.js"></script>
-<script>hljs.highlightAll();</script>
-|};
+              {|<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/ocaml.min.js"></script>|};
+            Tyxml.Html.Unsafe.data {|<script>hljs.highlightAll();</script>|};
           ];
       }
   in
@@ -82,6 +80,20 @@ let rec main root_dir =
        [
          Dream.get "/" (fun _ -> Dream.html @@ html_to_string index_page);
          Dream.get "/static/style.css" return_static_css_file;
+         Dream.get "/posts/:name" begin fun request ->
+             let post_name = Dream.param request "name" in
+
+             let post_page =
+               List.find
+                 (fun post_page ->
+                   String.equal post_page.Bearbeer.Post_page.filename post_name)
+                 blog_project.posts
+             in
+
+             Bearbeer.Html_page_render.render_post_page_contents post_page
+             |> Bearbeer.Html_page_render.render_page ~settings:page_settings
+             |> html_to_string |> Dream.html
+           end;
        ]
 
 and guard_error_to_string r =

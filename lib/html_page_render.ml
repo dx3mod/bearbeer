@@ -16,7 +16,7 @@ let render_page ~settings contents =
   let head_section =
     head (title @@ txt settings.title)
     @@ [
-         link_css @@ settings.basic_url ^ "static/style.css";
+         link_css @@ settings.basic_url ^ "/static/style.css";
          Unsafe.data
            {| <meta name="viewport" content="width=device-width, initial-scale=1.0"> |};
        ]
@@ -34,43 +34,48 @@ type index_page_settings = {
   posts : Post_page.t list;
 }
 
+let date_post post_page =
+  let open Tyxml.Html in
+  let[@inline] date_of_post_page (post_page : Post_page.t) =
+    Format.to_string Date_time.pp post_page.publish_date
+  in
+
+  small [ txt (date_of_post_page post_page) ]
+
 let render_posts_list (post_pages : Post_page.t list) =
   let open Tyxml.Html in
   let[@inline] title_of_post_page (post_page : Post_page.t) = post_page.title in
-  let[@inline] date_of_post_page (post_page : Post_page.t) =
-    Format.to_string Date_time.pp post_page.date
-  in
 
   let post_pages =
     List.sort
-      (fun (a : Post_page.t) b -> Date_time.compare a.date b.date)
+      (fun (a : Post_page.t) b ->
+        Date_time.compare a.publish_date b.publish_date)
       post_pages
   in
 
-  div
-    [
-      ul ~a:[ a_class [ "posts-list" ] ]
-      @@ List.map
-           (fun post_page ->
-             li
-               [
-                 p
-                   ~a:[ a_style "margin-bottom:0;" ]
-                   [
-                     b
-                       [
-                         a
-                           ~a:[ a_href "/" ]
-                           [ txt @@ title_of_post_page post_page ];
-                       ];
-                     small [ txt (date_of_post_page post_page) ];
-                   ];
-                 p
-                   ~a:[ a_style "color: gray; margin-top:0;" ]
-                   [ txt post_page.description ];
-               ])
-           post_pages;
-    ]
+  let link_post post_page =
+    a
+      ~a:[ a_href @@ Printf.sprintf "/posts/%s" post_page.Post_page.filename ]
+      [ txt @@ title_of_post_page post_page ]
+  in
+
+  let p_post_header post_page =
+    p
+      ~a:[ a_style "margin-bottom:0;" ]
+      [ b [ link_post post_page; date_post post_page ] ]
+  in
+
+  let p_post_description (post_page : Post_page.t) =
+    p ~a:[ a_style "color: gray; margin-top:0;" ] [ txt post_page.description ]
+  in
+
+  let ul_posts_list_of_list list = ul ~a:[ a_class [ "posts-list" ] ] list in
+
+  let li_of_post_page post_page =
+    li [ p_post_header post_page; p_post_description post_page ]
+  in
+
+  div [ ul_posts_list_of_list @@ List.map li_of_post_page post_pages ]
 
 let render_index_page_contents ~settings markdown_contents =
   let open Tyxml.Html in
@@ -100,4 +105,12 @@ let render_index_page_contents ~settings markdown_contents =
       (* hr (); *)
       h3 [ txt "Posts" ];
       render_posts_list settings.posts;
+    ]
+
+let render_post_page_contents (post_page : Post_page.t) =
+  let open Tyxml.Html in
+  main
+    [
+      p [ date_post post_page ];
+      div [ Unsafe.data @@ Omd.to_html post_page.markdown.contents ];
     ]
