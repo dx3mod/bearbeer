@@ -17,6 +17,7 @@ depends: [
   "yaml"
   "ppx_deriving_yaml"
   "cmdliner"
+  "alcotest" {with-test}
   "odoc" {with-doc}
 ]
 build: [

@@ -11,7 +11,7 @@ git clone https://github.com/dx3mod/bearbeer.git
 
 Secondly, install the project dependencies using the package manager.
 ```console
-opam install . --deps-only
+opam install . --deps-only --with-test
 ```
 
 Third, build already the project and go to develop this shit.
