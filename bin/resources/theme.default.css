@@ -6,7 +6,7 @@
     --font-secondary:
         ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
         "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    --font-scale: 1em;
+    --font-scale: 1.06em;
     --background-color: #fff;
     --heading-color: #222;
     --text-color: #444;
@@ -17,11 +17,13 @@
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --background-color: #000000;
-        --heading-color: #eee;
-        --text-color: #ddd;
-        --link-color: #8cc2dd;
+        --background-color: #0f1117;
+        --heading-color: #c6c8d1;
+        --text-color: #c6c8d1;
+        --link-color: #89b8c2;
         --visited-color: #8b6fcb;
         --blockquote-color: #ccc;
+        --code-background: #1a1b26;
+        --footer-color: #6b7089;
     }
 }

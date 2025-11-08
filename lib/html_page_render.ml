@@ -111,6 +111,7 @@ let render_post_page_contents (post_page : Post_page.t) =
   let open Tyxml.Html in
   main
     [
+      a ~a:[ a_href "/" ] [ txt "⾕" ];
       p [ date_post post_page ];
       div [ Unsafe.data @@ Omd.to_html post_page.markdown.contents ];
     ]

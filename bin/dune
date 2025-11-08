@@ -18,8 +18,8 @@
 
 (rule
  (with-stdout-to
-  resource_github_theme.ml
+  resource_default_theme.ml
   (progn
    (echo "let plain = {|")
-   (cat resources/theme.github.css)
+   (cat resources/theme.default.css)
    (echo "|}"))))

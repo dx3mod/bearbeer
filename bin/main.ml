@@ -7,8 +7,9 @@ let rec main root_dir =
   let current_theme =
     Bearbeer.Theme.
       {
-        plain_css = Resource_github_theme.plain;
-        highlight_themes = { dark = Some "github-dark"; light = Some "github" };
+        plain_css = Resource_default_theme.plain;
+        highlight_themes =
+          { dark = Some "tokyo-night-dark"; light = Some "rose-pine-dawn" };
       }
   in
 
@@ -25,7 +26,20 @@ let rec main root_dir =
         title = blog_project.config.title;
         language = blog_project.config.language;
         basic_url = "";
-        footer = [];
+        footer =
+          Tyxml.Html.
+            [
+              p
+                [
+                  i
+                    [
+                      txt "powered by ";
+                      a
+                        ~a:[ a_href "https://github.com/dx3mod/bearbeer" ]
+                        [ txt "bearbeer" ];
+                    ];
+                ];
+            ];
         in_head =
           [
             Tyxml.Html.Unsafe.data

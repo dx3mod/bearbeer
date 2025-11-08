@@ -24,6 +24,7 @@ body {
     font-size: var(--font-scale);
     margin: auto;
     padding: 20px;
+    padding-top: 100px;
     max-width: var(--width);
     text-align: left;
     background-color: var(--background-color);
@@ -31,10 +32,16 @@ body {
     overflow-wrap: break-word;
     line-height: 1.5;
     color: var(--text-color);
+    font-optical-sizing: auto;
+}
 
-    padding-top: 3em;
+body p {
+    padding-top: 0em;
+    padding-bottom: 0em;
+
     text-align: justify;
-    word-spacing: -2px;
+    /* word-spacing: -2px; */
+    hyphens: auto;
 }
 
 h1,
@@ -70,11 +77,12 @@ button {
 
 time {
     font-style: normal;
-    font-size: 15px;
+    /* font-size: 15px; */
 }
 
 main {
-    line-height: 1.6;
+    line-height: 1.1;
+    font-size: 1.1em;
 }
 
 table {
@@ -97,7 +105,7 @@ code {
 }
 
 pre code {
-    /* background: #0d1117; */
+    background: var(--code-background);
     padding: 10px;
     display: block;
 }
@@ -112,6 +120,12 @@ blockquote {
 footer {
     padding: 25px 0;
     text-align: center;
+    color: var(--footer-color);
+}
+
+footer a {
+    color: var(--footer-color);
+    text-decoration: underline;
 }
 
 .title h1 {
@@ -130,8 +144,6 @@ footer {
     overflow-x: auto;
 }
 
-
-
 ul.posts-list li a:visited {
     color: var(--visited-color);
 }
@@ -145,7 +157,6 @@ ul.posts-list li small {
     color: gray;
     padding-left: 0.7em;
 }
-
 
 ul.posts-list {
     list-style-type: none;
