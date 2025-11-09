@@ -12,6 +12,6 @@ let load ~root_dir =
 
   let* config = load_project_config "bearbeer.yml" in
   let* index_page = load_index_page "index.md" in
-  let* posts = Posts_loader.load_post_pages ~root_dir:config.posts_dir in
+  let* posts = Posts_loader.load_post_pages ~root_dir:config.layout.posts_dir in
 
   return Blog_project.{ root_dir; config; posts; index_page }

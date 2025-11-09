@@ -20,10 +20,11 @@
  (depends
   ocaml
   containers
+  cmdliner
   dream
   omd
   tyxml
   yaml
   ppx_deriving_yaml
-  cmdliner
+  ppx_deriving
   (alcotest :with-test)))

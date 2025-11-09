@@ -1,13 +1,19 @@
 module Config = struct
   type link = { title : string; url : string } [@@deriving of_yaml]
 
+  type layout = {
+    posts_dir : string; [@default "posts"]
+    public_dir : string; [@default "public"]
+  }
+  [@@deriving of_yaml, make]
+
   type t = {
     title : string;
     language : string; [@default "en"]
     avatar : string option; [@default None]
     base_url : string; [@default ""]
     links : link list; [@default []]
-    posts_dir : string; [@default "posts"]
+    layout : layout; [@default make_layout ()]
   }
   [@@deriving of_yaml]
 

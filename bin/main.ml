@@ -94,6 +94,8 @@ let rec main root_dir =
        [
          Dream.get "/" (fun _ -> Dream.html @@ html_to_string index_page);
          Dream.get "/static/style.css" return_static_css_file;
+         Dream.get "/static/**"
+         @@ Dream.static blog_project.config.layout.public_dir;
          Dream.get "/posts/:name" begin fun request ->
              let post_name = Dream.param request "name" in
 

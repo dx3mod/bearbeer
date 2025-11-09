@@ -10,7 +10,7 @@
   frontmatter
   date_time)
  (preprocess
-  (pps ppx_deriving_yaml)))
+  (pps ppx_deriving_yaml ppx_deriving.make)))
 
 (env
  (_
