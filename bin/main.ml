@@ -21,7 +21,7 @@ let rec main root_dir =
   in
 
   let page_settings =
-    Bearbeer.Html_page_render.
+    Bearbeer.Html_page_render.Html_page.
       {
         title = blog_project.config.title;
         language = blog_project.config.language;
@@ -61,7 +61,7 @@ let rec main root_dir =
   in
 
   let index_page_settings =
-    Bearbeer.Html_page_render.
+    Bearbeer.Html_page_render.Index_page_contents.
       {
         title = page_settings.title;
         links = blog_project.config.links;
@@ -71,10 +71,9 @@ let rec main root_dir =
   in
 
   let index_page =
-    let open Bearbeer.Html_page_render in
-    render_page ~settings:page_settings
-    @@ render_index_page_contents ~settings:index_page_settings
-         blog_project.index_page.contents
+    Bearbeer.Html_page_render.Index_page_contents.render index_page_settings
+      blog_project.index_page.contents
+    |> Bearbeer.Html_page_render.Html_page.render page_settings
   in
 
   let return_static_css_file =
@@ -106,8 +105,8 @@ let rec main root_dir =
                  blog_project.posts
              in
 
-             Bearbeer.Html_page_render.render_post_page_contents post_page
-             |> Bearbeer.Html_page_render.render_page ~settings:page_settings
+             Bearbeer.Html_page_render.Post_page_contents.render post_page
+             |> Bearbeer.Html_page_render.Html_page.render page_settings
              |> html_to_string |> Dream.html
            end;
        ]
