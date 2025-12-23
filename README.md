@@ -7,7 +7,7 @@ Was inspired by [deno_blog] and [Bear Blog] projects.
 
 If you want to add something, just [fork it](./CONTRIBUTING.md) and go drink beer.
 
-**Features**
+<!-- **Features**
 
 - Opinionated style and project organization are done and done well
 - Dead simple to use and configure with the help of lovely documentation
@@ -72,4 +72,4 @@ The project is licensed under [the MIT License](./LICENSE), which allows for all
 
 [deno_blog]: https://github.com/denoland/deno_blog
 [Bear Blog]: https://bearblog.dev/
-[OCaml]: https://ocaml.org
+[OCaml]: https://ocaml.org -->
