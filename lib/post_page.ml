@@ -16,19 +16,22 @@ type attrs_intf = {
 let of_markdown_page ~filename markdown_page =
   let inferred_title_page =
     match markdown_page.Markdown_page.contents with
-    | Omd.Heading (_, _, Omd.Text (_, title)) :: _ -> Ok title
-    | _ -> Error `Post_not_have_title
+    | Omd.Heading (_, _, Omd.Text (_, title)) :: _ -> Some title
+    | _ -> None
   in
 
-  let open Result in
-  let* { title; description; publish_date } =
+  let { title; description; publish_date } =
     attrs_intf_of_yaml markdown_page.Markdown_page.attrs
-    |> Result.map_err (fun (`Msg m) -> `Yaml_parse_error m)
+    |> Result.fold ~ok:Fun.id ~error:(fun (`Msg reason) ->
+        raise (Frontmatter.Yaml_parse_error reason))
   in
-  let+ title = Option.fold Fun.const inferred_title_page title
-  and+ publish_date =
+  let title =
+    match Option.or_ title ~else_:inferred_title_page with
+    | None -> raise (Project_loader.File_load_error {filename; reason = ""})
+    | Some title -> title
+  and publish_date =
     match publish_date with
-    | None -> Ok (Date_time.today ())
+    | None -> Date_time.today ()
     | Some publish_date -> Date_time.of_string publish_date
   in
 

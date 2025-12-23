@@ -10,6 +10,14 @@ val of_string_yaml :
 (** [of_string_yaml string] extract frontmatter from a [string] and parse it as
     YAML. *)
 
+exception Yaml_parse_error of string
+
+val of_string_yaml_exn : string -> Yaml.value t
+(** [of_string_yaml string] extract frontmatter from a [string] and parse it as
+    YAML.
+
+    @raise Yaml_parse_error *)
+
 val of_string_yaml_conv :
   (Yaml.value -> ('a, ([> `Yaml_parse_error of string ] as 'error)) result) ->
   string ->

@@ -1,3 +1,5 @@
+exception Parse_error of string
+
 module Config = struct
   type link = { title : string; url : string } [@@deriving of_yaml]
 
@@ -19,7 +21,8 @@ module Config = struct
 
   let of_channel ic =
     In_channel.input_all ic |> Yaml.of_string |> Result.flat_map of_yaml
-    |> Result.map_err (fun (`Msg m) -> `Yaml_parse_error m)
+    |> Result.fold ~ok:Fun.id ~error:(fun (`Msg reason) ->
+        raise (Parse_error reason))
 end
 
 type t = {

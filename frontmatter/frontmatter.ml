@@ -26,6 +26,13 @@ let of_string_yaml input =
       |> Result.map_error (fun (`Msg m) -> `Yaml_parse_error m)
       |> Result.map (fun frontmatter -> (Some frontmatter, contents))
 
+exception Yaml_parse_error of string
+
+let of_string_yaml_exn input =
+  match of_string_yaml input with
+  | Ok value -> value
+  | Error (`Yaml_parse_error reason) -> raise (Yaml_parse_error reason)
+
 let of_string_yaml_conv p input =
   Result.bind (of_string_yaml input) @@ fun (attrs, contents) ->
   match attrs with

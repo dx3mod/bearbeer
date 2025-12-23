@@ -1,8 +1,6 @@
 let rec main root_dir =
-  let open Result in
-  guard_error_to_string
-  @@
-  let+ blog_project = Bearbeer.Project_loader.load ~root_dir in
+  guard_error_to_string @@ fun () ->
+  let blog_project = Bearbeer.Project_loader.load ~root_dir in
 
   let current_theme =
     Bearbeer.Theme.
@@ -111,8 +109,21 @@ let rec main root_dir =
            end;
        ]
 
-and guard_error_to_string r =
-  let handle_load_page_error fmt = function
+and guard_error_to_string f =
+  let open Bearbeer in
+  let rendern_exn e =
+    match e with
+    | Project_loader.File_load_error { filename; reason } ->
+        Format.sprintf "at %s file.\nLoad page error:\n\t%s" filename reason
+    | Post_page.Post_not_have_title ->
+      
+    | e -> raise e
+  in
+
+  try f () with e -> rendern_exn e |> prerr_endline
+
+
+(* let handle_load_page_error fmt = function
     | `Post_not_have_title -> Format.fprintf fmt "the post not have a title"
     | `Yaml_parse_error msg | `Invalid_date_value msg ->
         Format.pp_print_string fmt msg
@@ -128,6 +139,6 @@ and guard_error_to_string r =
     | `Not_found msg -> Printf.sprintf "not found %s" msg
     | _ -> "something went wrong (uncaught error)"
   in
-  Result.map_err render_error r
+  Result.map_err render_error r *)
 
-let () = exit @@ Cmdliner.Cmd.eval_result @@ Cli.cmd main
+let () = exit @@ Cmdliner.Cmd.eval @@ Cli.cmd main

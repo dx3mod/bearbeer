@@ -1,8 +1,7 @@
 type t = { attrs : Yaml.value; contents : Omd.doc }
 
 let of_string str =
-  let open Result in
-  let+ attrs, contents = Frontmatter.of_string_yaml str in
+  let attrs, contents = Frontmatter.of_string_yaml_exn str in
 
   {
     attrs = Option.get_or ~default:(`O []) attrs;

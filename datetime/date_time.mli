@@ -3,8 +3,12 @@
 type t = { year : int; month : int; day : int }
 (** Representation of date in simple format. *)
 
-val of_string : string -> (t, [> `Invalid_date_value of string ]) result
-(** Scan the string for date values else return an error. *)
+exception Parse_error of string
+
+val of_string : string -> t
+(** Scan the string for date values else return an error.
+
+    @raise Parse_error *)
 
 val of_localtime : Unix.tm -> t
 (** [of_localtime localtime] convert Unix localtime record to {!t}. *)
