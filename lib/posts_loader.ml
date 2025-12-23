@@ -8,4 +8,5 @@ let load_post_pages ~root_dir =
     |> Result.map_err (fun e -> `Load_page_error (filename, e))
   in
 
-  Sys.readdir root_dir |> Array.to_list |> Result.map_l aux
+  try Sys.readdir root_dir |> Array.to_list |> Result.map_l aux
+  with Sys_error _ -> Error (`Not_found "a posts/ directory")

@@ -118,15 +118,16 @@ and guard_error_to_string r =
         Format.pp_print_string fmt msg
   in
 
-  let aux = function
+  let render_error = function
     | `Msg msg -> failwith @@ Printf.sprintf "guard_error_to_string: %s" msg
     | `Load_page_error (filename, err) ->
         Format.sprintf "at %s file.\nLoad page error:\n\t%a" filename
           handle_load_page_error err
     | `File_load_error (filename, msg) ->
         Printf.sprintf "at %s file.\n%s" filename msg
-    | _ -> "something went wrong"
+    | `Not_found msg -> Printf.sprintf "not found %s" msg
+    | _ -> "something went wrong (uncaught error)"
   in
-  Result.map_err aux r
+  Result.map_err render_error r
 
 let () = exit @@ Cmdliner.Cmd.eval_result @@ Cli.cmd main

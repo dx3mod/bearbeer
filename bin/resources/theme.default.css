@@ -1,12 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
 :root {
     --width: 720px;
-    --font-main:
-        ui-sans-serif, system-ui, sans-serif, "JetBrains Mono", "Apple Color Emoji",
-        "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    --font-secondary:
-        ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
-        "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    --font-scale: 1.06em;
+    --font-main: Inter;
+    --font-secondary: Inter;
+    --font-scale: 0.96em;
     --background-color: #fff;
     --heading-color: #222;
     --text-color: #444;

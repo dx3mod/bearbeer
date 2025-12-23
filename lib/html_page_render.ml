@@ -61,11 +61,14 @@ module Index_page_contents = struct
             h1 ~a:[ a_style "margin-bottom: 0;" ] [ txt settings.title ];
           ];
         nav nav_links;
-        Unsafe.data @@ Omd.to_html md_doc;
-        br ();
-        (* hr (); *)
-        h3 [ txt "Posts" ];
-        render_posts_list settings.posts;
+        main
+          [
+            Unsafe.data @@ Omd.to_html md_doc;
+            br ();
+            begin if List.is_empty settings.posts then div []
+            else div [ h3 [ txt "Posts" ]; render_posts_list settings.posts ]
+            end;
+          ];
       ]
 
   and render_date_post post_page =
