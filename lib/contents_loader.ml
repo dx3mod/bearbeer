@@ -21,6 +21,9 @@ module Page = struct
 
   type t = { metadata : metadata; contents : Omd.doc }
 
+  let compare_publish_date page_a page_b =
+    Date_time.compare page_a.metadata.publish_date page_b.metadata.publish_date
+
   let infer_title doc =
     match doc with
     | Omd.Heading (_, 1, Omd.Text (_, title)) :: _ -> Some title
@@ -52,7 +55,7 @@ module Page = struct
 
   let of_channel ic = In_channel.input_all ic |> of_string
 
-  let normalize_links ~root_dir page =
+  let normalize_links ~link_prefix page =
     let rec normalize_block = function
       | Omd.Paragraph (attrs, inline) ->
           Omd.Paragraph (attrs, normalize_inline inline)
@@ -62,7 +65,7 @@ module Page = struct
           Omd.Concat (attrs, List.map normalize_inline inlines)
       | Omd.Link (attrs, link) ->
           let destination =
-            Fpath.(root_dir // v link.destination |> normalize |> to_string)
+            Fpath.(link_prefix // v link.destination |> normalize |> to_string)
           in
 
           Omd.Link (attrs, { link with destination })
@@ -71,3 +74,18 @@ module Page = struct
 
     { page with contents = List.map normalize_block page.contents }
 end
+
+let load_dir ~link_prefix dir_path =
+  let load_page filename =
+    In_channel.with_open_text
+      Filename.(concat dir_path filename)
+      Page.of_channel
+    |> Page.normalize_links ~link_prefix
+  in
+
+  Sys.readdir dir_path |> Array.to_iter |> List.of_iter
+  |> List.filter_map begin fun filename ->
+      if String.ends_with ~suffix:".md" filename then Some (load_page filename)
+      else None
+    end
+  |> List.sort Page.compare_publish_date
