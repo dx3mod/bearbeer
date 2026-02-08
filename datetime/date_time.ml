@@ -1,7 +1,9 @@
 type t = { year : int; month : int; day : int }
 
-let pp fmt { year; month; day } =
+let ppf fmt { year; month; day } =
   Format.fprintf fmt "%02d.%02d.%d" day month year
+
+let pp fmt date = Format.fprintf fmt "Date_time(%a)" ppf date
 
 exception Parse_error of string
 

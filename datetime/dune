@@ -1,4 +1,4 @@
 (library
+ (public_name bearbeer.datetime)
  (name date_time)
- (package bearbeer)
  (libraries unix))

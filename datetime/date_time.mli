@@ -19,5 +19,7 @@ val today : unit -> t
 val compare : t -> t -> int
 (** Compare two dates. *)
 
-val pp : Format.formatter -> t -> unit
+val ppf : Format.formatter -> t -> unit
 (** [pp fmt date] pretty print to format the [date]. *)
+
+val pp : Format.formatter -> t -> unit
