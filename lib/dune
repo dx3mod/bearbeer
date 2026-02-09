@@ -1,5 +1,13 @@
 (library
  (name bearbeer)
- (libraries containers omd fpath frontmatter_extractor.yaml date_time)
+ (libraries containers omd tyxml frontmatter_extractor.yaml date_time)
  (preprocess
-  (pps ppx_deriving_yaml)))
+  (pps ppx_deriving.make ppx_deriving_yaml)))
+
+(rule
+ (with-stdout-to
+  resources.ml
+  (progn
+   (echo "let bearneo_css = {|")
+   (cat resources/bearneo.css)
+   (echo "|}"))))

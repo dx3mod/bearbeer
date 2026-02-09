@@ -55,7 +55,7 @@ module Page = struct
 
   let of_channel ic = In_channel.input_all ic |> of_string
 
-  let normalize_links ~link_prefix page =
+  let normalize_links page =
     let rec normalize_block = function
       | Omd.Paragraph (attrs, inline) ->
           Omd.Paragraph (attrs, normalize_inline inline)
@@ -64,9 +64,7 @@ module Page = struct
       | Omd.Concat (attrs, inlines) ->
           Omd.Concat (attrs, List.map normalize_inline inlines)
       | Omd.Link (attrs, link) ->
-          let destination =
-            Fpath.(link_prefix // v link.destination |> normalize |> to_string)
-          in
+          let destination = Filename.basename link.destination in
 
           Omd.Link (attrs, { link with destination })
       | inline -> inline
@@ -75,17 +73,11 @@ module Page = struct
     { page with contents = List.map normalize_block page.contents }
 end
 
-let load_dir ~link_prefix dir_path =
-  let load_page filename =
-    In_channel.with_open_text
-      Filename.(concat dir_path filename)
-      Page.of_channel
-    |> Page.normalize_links ~link_prefix
-  in
+let load_page filename =
+  In_channel.with_open_text filename Page.of_channel |> Page.normalize_links
 
+let load_posts_from_dir dir_path =
   Sys.readdir dir_path |> Array.to_iter |> List.of_iter
-  |> List.filter_map begin fun filename ->
-      if String.ends_with ~suffix:".md" filename then Some (load_page filename)
-      else None
-    end
-  |> List.sort Page.compare_publish_date
+  |> List.filter (String.ends_with ~suffix:".md")
+  |> List.map (fun filename ->
+      (filename, load_page Filename.(concat dir_path filename)))
