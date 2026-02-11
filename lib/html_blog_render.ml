@@ -98,7 +98,18 @@ let render_posts_page blog =
 
   render_blog_skeleton ~blog ~subtitle:"Posts"
     [
-      main ~a:[ a_class [ "content" ] ] [ h1 [ txt "Posts" ]; ul_blog_posts ];
+      main
+        ~a:[ a_class [ "content" ] ]
+        [
+          h1 [ txt "Posts" ];
+          p
+            [
+              txt
+              @@ Printf.sprintf "There are %d pieces."
+              @@ Blog.count_posts blog;
+            ];
+          ul_blog_posts;
+        ];
       render_footer blog;
     ]
 
