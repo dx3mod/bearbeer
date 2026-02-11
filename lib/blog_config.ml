@@ -4,6 +4,7 @@ type t = {
   title : string;
   language : string; [@default "en"]
   author : string; [@default ""]
+  avatar : string option; [@default None]
   synopsys : string; [@default ""]
   posts_dir : string; [@default "posts"]
   links : (string * string) list; [@default []]

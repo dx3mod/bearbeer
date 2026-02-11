@@ -1,3 +1,5 @@
+open Containers
+
 let render_blog_skeleton ~blog contents =
   let open Tyxml.Html in
   let head =
@@ -15,10 +17,24 @@ let render_blog_skeleton ~blog contents =
 
 let render_index_page blog =
   let open Tyxml.Html in
+  let img_avatar =
+    let block = div ~a:[ a_style "clear: both;" ] [] in
+
+    blog.Blog.config.avatar
+    |> Option.map_or ~default:block @@ fun src ->
+       div
+         [
+           img ~a:[ a_style "width: 15%; float: left;" ] ~src ~alt:"avatar" ();
+           block;
+         ]
+  in
+
   render_blog_skeleton ~blog
     [
       header
         [
+          br ();
+          img_avatar;
           a
             ~a:[ a_class [ "title" ]; a_href "/" ]
             [ h1 [ txt blog.config.title ] ];
