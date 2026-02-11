@@ -5,7 +5,7 @@ type t = {
   language : string; [@default "en"]
   author : string; [@default ""]
   synopsys : string; [@default ""]
-  posts_dir : string; [@default "posts/"]
+  posts_dir : string; [@default "posts"]
   links : (string * string) list; [@default []]
   favicon : string option; [@default None]
 }

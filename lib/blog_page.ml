@@ -48,7 +48,7 @@ let of_channel ic = In_channel.input_all ic |> of_string
 
 exception Invalid_markdown_link_path of string
 
-let normalize_links_paths ~project_dir page =
+let normalize_links_paths ~project_dir ~posts_dir page =
   let rec normalize_block = function
     | Omd.Paragraph (attrs, inline) ->
         Omd.Paragraph (attrs, normalize_inline inline)
@@ -58,7 +58,8 @@ let normalize_links_paths ~project_dir page =
         Omd.Concat (attrs, List.map normalize_inline inlines)
     | Omd.Link (attrs, link) ->
         let normalized_path =
-          Fpath.(project_dir / "posts" // v link.destination) |> Fpath.normalize
+          Fpath.(project_dir / posts_dir // v link.destination)
+          |> Fpath.normalize
         in
 
         let destination =

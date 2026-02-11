@@ -34,7 +34,7 @@ let of_localtime localtime =
   {
     day = localtime.Unix.tm_mday;
     month = localtime.Unix.tm_mon + 1;
-    year = localtime.Unix.tm_year;
+    year = localtime.Unix.tm_year + 1900;
   }
 
 let today () = Unix.time () |> Unix.localtime |> of_localtime
