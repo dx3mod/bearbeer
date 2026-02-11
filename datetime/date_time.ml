@@ -7,6 +7,9 @@ let ppf fmt { year; month; day } =
 
 let pp fmt date = Format.fprintf fmt "Date_time(%a)" ppf date
 
+let to_string { year; month; day } =
+  Printf.sprintf "%02d.%02d.%d" day month year
+
 let of_string s =
   let open Parse in
   let number =
@@ -27,8 +30,8 @@ let of_string s =
 
 let compare da db =
   if da.year = db.year && da.month = db.month && da.day = db.day then 0
-  else if da.year < db.year && da.month < db.month && da.day < db.day then -1
-  else 1
+  else if da.year < db.year && da.month < db.month && da.day < db.day then 1
+  else -1
 
 let of_localtime localtime =
   {

@@ -16,6 +16,10 @@ let main project_root_dir =
              Bearbeer.Html_blog_render.render_index_page blog
              |> html_to_string |> Dream.html
            end;
+         Dream.get "/posts" begin fun _ ->
+             Bearbeer.Html_blog_render.render_posts_page blog
+             |> html_to_string |> Dream.html
+           end;
        ]
 
 let () = Cli.run main
