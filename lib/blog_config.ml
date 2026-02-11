@@ -9,6 +9,7 @@ type t = {
   posts_dir : string; [@default "posts"]
   links : (string * string) list; [@default []]
   favicon : string option; [@default None]
+  footer : string; [@default ""]
 }
 [@@deriving of_yaml]
 

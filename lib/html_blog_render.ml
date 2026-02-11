@@ -17,6 +17,10 @@ let render_blog_skeleton ?(subtitle = "") ~blog contents' =
 
   html ~a:[ a_lang blog.config.language ] head body
 
+let render_footer blog =
+  let open Tyxml.Html in
+  footer [ Unsafe.data blog.Blog.config.footer ]
+
 let render_index_page blog =
   let open Tyxml.Html in
   let img_avatar =
@@ -52,6 +56,7 @@ let render_index_page blog =
       main
         ~a:[ a_class [ "content" ] ]
         [ Unsafe.data (Omd.to_html blog.index_page.markdown_contents) ];
+      render_footer blog;
     ]
 
 let render_post_item page =
@@ -92,7 +97,10 @@ let render_posts_page blog =
   in
 
   render_blog_skeleton ~blog ~subtitle:"Posts"
-    [ main ~a:[ a_class [ "content" ] ] [ h1 [ txt "Posts" ]; ul_blog_posts ] ]
+    [
+      main ~a:[ a_class [ "content" ] ] [ h1 [ txt "Posts" ]; ul_blog_posts ];
+      render_footer blog;
+    ]
 
 let render_post_page ~blog post_page =
   let open Tyxml.Html in
@@ -111,4 +119,5 @@ let render_post_page ~blog post_page =
           br ();
           Unsafe.data (Omd.to_html post_page.markdown_contents);
         ];
+      render_footer blog;
     ]
