@@ -1,6 +1,6 @@
 (library
  (name bearbeer)
- (libraries containers date_time omd fpath frontmatter_extractor.yaml)
+ (libraries containers date_time omd fpath tyxml frontmatter_extractor.yaml)
  (preprocess
   (pps ppx_deriving_yaml)))
 
