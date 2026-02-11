@@ -2,7 +2,11 @@ open Containers
 
 let render_blog_skeleton ?(subtitle = "") ~blog contents' =
   let open Tyxml.Html in
-  let subtitle = if String.is_empty subtitle then "" else " | " ^ subtitle in
+  let subtitle =
+    if (not blog.Blog.config.enable_subtitle) || String.is_empty subtitle then
+      ""
+    else " | " ^ subtitle
+  in
 
   let head =
     head

@@ -10,6 +10,7 @@ type t = {
   links : (string * string) list; [@default []]
   favicon : string option; [@default None]
   footer : string; [@default ""]
+  enable_subtitle : bool; [@default true]
 }
 [@@deriving of_yaml]
 
