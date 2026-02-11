@@ -7,6 +7,9 @@ type t = {
   posts : Blog_page.t list;
 }
 
+let find_post_by_name blog name =
+  List.find (fun post -> String.equal post.Blog_page.uri name) blog.posts
+
 let group_posts_by_year blog =
   let eq page_a page_b =
     page_a.Blog_page.metadata.publish_date.year

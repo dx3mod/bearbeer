@@ -7,7 +7,7 @@ type metadata = {
 }
 [@@deriving of_yaml]
 
-type t = { metadata : metadata; markdown_contents : Omd.doc }
+type t = { uri : string; metadata : metadata; markdown_contents : Omd.doc }
 
 let compare_by_publish_date page_a page_b =
   Date_time.compare page_a.metadata.publish_date page_b.metadata.publish_date
@@ -40,6 +40,7 @@ let of_string s =
   in
 
   {
+    uri = "";
     markdown_contents;
     metadata = { metadata with title = inferred_title_page };
   }
@@ -77,3 +78,5 @@ let normalize_links_paths ~project_dir ~posts_dir page =
     page with
     markdown_contents = List.map normalize_block page.markdown_contents;
   }
+
+let with_uri uri page = { page with uri }

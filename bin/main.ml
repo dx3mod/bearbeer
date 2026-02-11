@@ -20,6 +20,16 @@ let main project_root_dir =
              Bearbeer.Html_blog_render.render_posts_page blog
              |> html_to_string |> Dream.html
            end;
+         Dream.get "/posts/:name" begin fun request ->
+             let post_name = Dream.param request "name" in
+
+             let blog_post =
+               Bearbeer.Blog.find_post_by_name blog ("posts/" ^ post_name)
+             in
+
+             Bearbeer.Html_blog_render.render_post_page ~blog blog_post
+             |> html_to_string |> Dream.html
+           end;
        ]
 
 let () = Cli.run main

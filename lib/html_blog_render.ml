@@ -68,7 +68,8 @@ let render_post_item page =
               space ();
             ];
         ];
-      a ~a:[]
+      a
+        ~a:[ a_href @@ page.uri ]
         [
           txt
           @@ Option.get_exn_or "unknown title for post"
@@ -92,3 +93,22 @@ let render_posts_page blog =
 
   render_blog_skeleton ~blog ~subtitle:"Posts"
     [ main ~a:[ a_class [ "content" ] ] [ h1 [ txt "Posts" ]; ul_blog_posts ] ]
+
+let render_post_page ~blog post_page =
+  let open Tyxml.Html in
+  let title =
+    Option.get_exn_or "unknown post page title"
+      post_page.Blog_page.metadata.title
+  and publish_date = Date_time.to_string post_page.metadata.publish_date in
+
+  render_blog_skeleton ~subtitle:title ~blog
+    [
+      main
+        ~a:[ a_class [ "content" ] ]
+        [
+          h1 [ txt title ];
+          p [ i [ time ~a:[ a_datetime publish_date ] [ txt publish_date ] ] ];
+          br ();
+          Unsafe.data (Omd.to_html post_page.markdown_contents);
+        ];
+    ]

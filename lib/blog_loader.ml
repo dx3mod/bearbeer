@@ -3,7 +3,7 @@ open Containers
 let load_blog_post_page ~project_dir ?posts_dir filename =
   let project_dir' = Fpath.to_string project_dir in
 
-  let filename =
+  let filename' =
     Option.map_or ~default:filename
       Filename.(
         fun posts_dir ->
@@ -13,8 +13,9 @@ let load_blog_post_page ~project_dir ?posts_dir filename =
 
   let posts_dir = Option.get_or ~default:"./" posts_dir in
 
-  In_channel.with_open_text filename Blog_page.of_channel
+  In_channel.with_open_text filename' Blog_page.of_channel
   |> Blog_page.normalize_links_paths ~project_dir ~posts_dir
+  |> Blog_page.with_uri Filename.(concat posts_dir filename)
 
 let load_blog_post_pages ~project_dir posts_dir =
   let project_dir' = Fpath.to_string project_dir in
