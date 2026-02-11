@@ -29,6 +29,12 @@ let render_index_page blog =
          ]
   in
 
+  let nav_links =
+    blog.config.links
+    |> List.map (fun (name, href) -> a ~a:[ a_href href ] [ txt name ])
+    |> nav
+  in
+
   render_blog_skeleton ~blog
     [
       header
@@ -38,6 +44,8 @@ let render_index_page blog =
           a
             ~a:[ a_class [ "title" ]; a_href "/" ]
             [ h1 [ txt blog.config.title ] ];
+          nav_links;
         ];
+      br ();
       main [ Unsafe.data (Omd.to_html blog.index_page.markdown_contents) ];
     ]
