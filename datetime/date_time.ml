@@ -38,3 +38,10 @@ let of_localtime localtime =
   }
 
 let today () = Unix.time () |> Unix.localtime |> of_localtime
+
+let of_yaml = function
+  | `String s ->
+      of_string s
+      |> Result.add_ctx "Content_loader"
+      |> Result.map_err (fun msg -> `Msg msg)
+  | _ -> Error (`Msg "invalid date time YAML value")
