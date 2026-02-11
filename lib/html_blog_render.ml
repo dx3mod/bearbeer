@@ -1,10 +1,12 @@
 open Containers
 
-let render_blog_skeleton ~blog contents' =
+let render_blog_skeleton ?(subtitle = "") ~blog contents' =
   let open Tyxml.Html in
+  let subtitle = if String.is_empty subtitle then "" else " | " ^ subtitle in
+
   let head =
     head
-      (title @@ txt blog.Blog.config.title)
+      (title @@ txt @@ blog.Blog.config.title ^ subtitle)
       [
         Unsafe.data
           {|<meta charset="UTF-8">
@@ -88,5 +90,5 @@ let render_posts_page blog =
     |> ul ~a:[ a_class [ "blog-posts" ] ]
   in
 
-  render_blog_skeleton ~blog
+  render_blog_skeleton ~blog ~subtitle:"Posts"
     [ main ~a:[ a_class [ "content" ] ] [ h1 [ txt "Posts" ]; ul_blog_posts ] ]
