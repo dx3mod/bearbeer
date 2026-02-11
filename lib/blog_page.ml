@@ -12,10 +12,17 @@ type t = { uri : string; metadata : metadata; markdown_contents : Omd.doc }
 let compare_by_publish_date page_a page_b =
   Date_time.compare page_a.metadata.publish_date page_b.metadata.publish_date
 
-let infer_title doc =
-  match doc with
-  | Omd.Heading (_, 1, Omd.Text (_, title)) :: _ -> Some title
-  | _ -> None
+let infer_title page =
+  if Option.is_some page.metadata.title then page
+  else
+    match page.markdown_contents with
+    | Omd.Heading (_, 1, Omd.Text (_, title)) :: markdown_contents ->
+        {
+          page with
+          markdown_contents;
+          metadata = { page.metadata with title = Some title };
+        }
+    | _ -> page
 
 exception Extract_frontmatter_error of string
 exception Parse_metadata_yaml_error of string
@@ -35,15 +42,8 @@ let of_string s =
   let metadata =
     attrs |> Option.value ~default:(`O []) |> metadata_of_yaml_exn
   in
-  let inferred_title_page =
-    Option.choice [ metadata.title; infer_title markdown_contents ]
-  in
 
-  {
-    uri = "";
-    markdown_contents;
-    metadata = { metadata with title = inferred_title_page };
-  }
+  { uri = ""; markdown_contents; metadata } |> infer_title
 
 let of_channel ic = In_channel.input_all ic |> of_string
 
