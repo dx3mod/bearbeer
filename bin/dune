@@ -1,4 +1,4 @@
 (executable
  (name main)
  (public_name bearbeer)
- (libraries bearbeer dream))
+ (libraries bearbeer dream cmdliner))
