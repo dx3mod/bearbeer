@@ -1,8 +1,6 @@
 (library
  (name bearbeer)
- (libraries containers omd tyxml frontmatter_extractor.yaml date_time)
- (preprocess
-  (pps ppx_deriving.make ppx_deriving_yaml)))
+ (libraries))
 
 (rule
  (with-stdout-to
