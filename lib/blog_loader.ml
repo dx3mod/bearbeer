@@ -38,8 +38,6 @@ let load_blog_project_from_dir root_project_dir =
     @@ Filename.concat root_project_dir' "index.md"
   in
 
-  let posts =
-    load_blog_posts ~project_dir:root_project_dir config.posts_dir
-  in
+  let posts = load_blog_posts ~project_dir:root_project_dir config.posts_dir in
 
   Blog.{ root_dir = root_project_dir; config; index_page; posts }

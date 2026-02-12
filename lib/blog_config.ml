@@ -5,10 +5,8 @@ type t = {
   language : string; [@default "en"]
   author : string; [@default ""]
   avatar : string option; [@default None]
-  synopsys : string; [@default ""]
   posts_dir : string; [@default "posts"]
   links : (string * string) list; [@default []]
-  favicon : string option; [@default None]
   footer : string; [@default ""]
   enable_subtitle : bool; [@default true]
 }

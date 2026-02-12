@@ -2,8 +2,9 @@ open Containers
 
 type metadata = {
   title : string option; [@default None]
-  synopsys : string; [@default ""]
-  publish_date : Date_time.t; [@default Date_time.today ()] [@key "date"]
+  synopsys : string; [@default ""] [@key "description"]
+  publish_date : Date_time.t; [@default Date_time.today ()]
+  tags : string list; [@default []]
 }
 [@@deriving of_yaml]
 

@@ -25,37 +25,43 @@ let render_footer blog =
   let open Tyxml.Html in
   footer [ Unsafe.data blog.Blog.config.footer ]
 
-let render_index_page blog =
+let render_header_avatar blog =
   let open Tyxml.Html in
-  let img_avatar =
-    let block = div ~a:[ a_style "clear: both;" ] [] in
+  let block = div ~a:[ a_style "clear: both;" ] [] in
 
-    blog.Blog.config.avatar
-    |> Option.map_or ~default:block @@ fun src ->
-       div
-         [
-           img ~a:[ a_style "width: 15%; float: left;" ] ~src ~alt:"avatar" ();
-           block;
-         ]
-  in
+  blog.Blog.config.avatar
+  |> Option.map_or ~default:block @@ fun src ->
+     div
+       [
+         a
+           ~a:[ a_href "/" ]
+           [
+             img ~a:[ a_style "width: 15%; float: left;" ] ~src ~alt:"avatar" ();
+             block;
+           ];
+       ]
 
+let render_header blog =
+  let open Tyxml.Html in
   let nav_links =
-    blog.config.links
+    blog.Blog.config.links
     |> List.map (fun (name, href) -> a ~a:[ a_href href ] [ txt name ])
     |> nav
   in
 
+  header
+    [
+      br ();
+      render_header_avatar blog;
+      a ~a:[ a_class [ "title" ]; a_href "/" ] [ h1 [ txt blog.config.title ] ];
+      nav_links;
+    ]
+
+let render_index_page blog =
+  let open Tyxml.Html in
   render_blog_skeleton ~blog
     [
-      header
-        [
-          br ();
-          img_avatar;
-          a
-            ~a:[ a_class [ "title" ]; a_href "/" ]
-            [ h1 [ txt blog.config.title ] ];
-          nav_links;
-        ];
+      render_header blog;
       br ();
       main
         ~a:[ a_class [ "content" ] ]
@@ -102,10 +108,11 @@ let render_posts_page blog =
 
   render_blog_skeleton ~blog ~subtitle:"Posts"
     [
+      render_header blog;
       main
         ~a:[ a_class [ "content" ] ]
         [
-          h1 [ txt "Posts" ];
+          br ();
           p
             [
               txt
@@ -124,14 +131,26 @@ let render_post_page ~blog post_page =
       post_page.Blog_page.metadata.title
   and publish_date = Date_time.to_string post_page.metadata.publish_date in
 
+  let tags =
+    post_page.metadata.tags
+    |> List.map (fun tag ->
+        li [ a ~a:[ a_style "color:gray;" ] [ txt @@ "#" ^ tag ] ])
+    |> ul ~a:[ a_class [ "tags" ] ]
+  in
+
   render_blog_skeleton ~subtitle:title ~blog
     [
       main
         ~a:[ a_class [ "content" ] ]
         [
+          a ~a:[ a_href "/" ] [ txt "家" ];
           h1 [ txt title ];
           p [ i [ time ~a:[ a_datetime publish_date ] [ txt publish_date ] ] ];
-          br ();
+          div
+            ~a:[ a_style "color:gray;" ]
+            [ small [ txt post_page.metadata.synopsys ]; tags ];
+          hr ();
+          (* br (); *)
           Unsafe.data (Omd.to_html post_page.markdown_contents);
         ];
       render_footer blog;
