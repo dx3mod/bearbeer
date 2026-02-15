@@ -93,6 +93,12 @@ nav a {
     margin-right: 8px;
 }
 
+nav span {
+    color: gray;
+    font-size: small;
+    margin-right: 8px;
+}
+
 ul.tags {
 
     list-style: none;
@@ -117,8 +123,14 @@ input {
     font-size: 14px;
 }
 
-main.content {
+main {
     line-height: 1.6;
+}
+
+main div.content {
+    word-break: break-word;
+    hyphens: auto;
+    text-align: justify;
 }
 
 table {
@@ -141,6 +153,7 @@ th {
 hr {
     border: 0;
     border-top: 1px dashed;
+    color: rgba(128, 128, 128, 0.267);
 }
 
 img {
@@ -218,6 +231,7 @@ footer {
     padding: 25px 0;
     text-align: center;
     font-size: var(--font-size-secondary);
+    color: gray;
 }
 
 ul li:has(input) {

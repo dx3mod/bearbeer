@@ -58,26 +58,28 @@ let normalize_links_paths ~project_dir ~posts_dir page =
   and normalize_inline = function
     | Omd.Concat (attrs, inlines) ->
         Omd.Concat (attrs, List.map normalize_inline inlines)
-    | Omd.Link (attrs, link) ->
-        let normalized_path =
-          Fpath.(project_dir / posts_dir // v link.destination)
-          |> Fpath.normalize
-        in
+    | Omd.Link (attrs, link) as link' ->
+        if not @@ String.starts_with ~prefix:"." link.destination then link'
+        else
+          let normalized_path =
+            Fpath.(project_dir / posts_dir // v link.destination)
+            |> Fpath.normalize
+          in
 
-        let destination =
-          Fpath.rem_prefix project_dir normalized_path
-          |> Option.get_lazy (fun () ->
-              raise @@ Invalid_markdown_link_path link.destination)
-          |> Fpath.to_string |> ( ^ ) "/"
-        in
+          let destination =
+            Fpath.rem_prefix project_dir normalized_path
+            |> Option.get_lazy (fun () ->
+                raise @@ Invalid_markdown_link_path link.destination)
+            |> Fpath.to_string |> ( ^ ) "/"
+          in
 
-        let destination =
-          if String.ends_with ~suffix:".md" destination then
-            Filename.remove_extension destination
-          else destination
-        in
+          let destination =
+            if String.ends_with ~suffix:".md" destination then
+              Filename.remove_extension destination
+            else destination
+          in
 
-        Omd.Link (attrs, { link with destination })
+          Omd.Link (attrs, { link with destination })
     | inline -> inline
   in
 

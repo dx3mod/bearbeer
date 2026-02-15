@@ -47,7 +47,9 @@ let render_header blog =
   let open Tyxml.Html in
   let nav_links =
     blog.Blog.config.links
-    |> List.map (fun (name, href) -> a ~a:[ a_href href ] [ txt name ])
+    |> List.map (fun (name, href) ->
+        if String.is_empty href then span [ txt name ]
+        else a ~a:[ a_href href ] [ txt name ])
     |> nav
   in
 
@@ -57,6 +59,7 @@ let render_header blog =
       render_header_avatar blog;
       a ~a:[ a_class [ "title" ]; a_href "/" ] [ h1 [ txt blog.config.title ] ];
       nav_links;
+      hr ();
     ]
 
 let render_index_page blog =
@@ -66,8 +69,11 @@ let render_index_page blog =
       render_header blog;
       br ();
       main
-        ~a:[ a_class [ "content" ] ]
-        [ Unsafe.data (Omd.to_html blog.index_page.markdown_contents) ];
+        [
+          div
+            ~a:[ a_class [ "content" ] ]
+            [ Unsafe.data (Omd.to_html blog.index_page.markdown_contents) ];
+        ];
       render_footer blog;
     ]
 
@@ -112,7 +118,6 @@ let render_posts_page blog =
     [
       render_header blog;
       main
-        ~a:[ a_class [ "content" ] ]
         [
           br ();
           p
@@ -143,17 +148,38 @@ let render_post_page ~blog post_page =
   render_blog_skeleton ~subtitle:title ~blog
     [
       main
-        ~a:[ a_class [ "content" ] ]
         [
-          a ~a:[ a_href "/" ] [ txt "家" ];
-          h1 [ txt title ];
-          p [ i [ time ~a:[ a_datetime publish_date ] [ txt publish_date ] ] ];
           div
-            ~a:[ a_style "color:gray;" ]
-            [ small [ txt post_page.metadata.synopsys ]; tags ];
-          hr ();
-          (* br (); *)
-          Unsafe.data (Omd.to_html post_page.markdown_contents);
+            [
+              a ~a:[ a_href "/" ] [ txt "⌘" ];
+              space ();
+              space ();
+              a ~a:[ a_href "/posts" ] [ txt "⌥" ];
+            ];
+          div
+            [
+              h1 [ txt title ];
+              p
+                [
+                  i
+                    [
+                      time
+                        ~a:[ a_datetime publish_date ]
+                        [
+                          txt publish_date;
+                          br ();
+                          small [ txt blog.config.author ];
+                        ];
+                    ];
+                ];
+              div
+                ~a:[ a_style "color:gray;" ]
+                [ small [ txt post_page.metadata.synopsys ]; tags ];
+              hr ();
+            ];
+          div
+            ~a:[ a_class [ "content" ] ]
+            [ Unsafe.data (Omd.to_html post_page.markdown_contents) ];
         ];
       render_footer blog;
     ]
