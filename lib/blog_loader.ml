@@ -15,6 +15,7 @@ let load_blog_page ~project_dir ?posts_dir filename =
 
   In_channel.with_open_text (filename' ^ ".md") Blog_page.of_channel
   |> Blog_page.normalize_links_paths ~project_dir ~posts_dir
+  |> Blog_page.update_headers_tags
   |> Blog_page.with_uri Filename.(concat posts_dir filename)
 
 let load_blog_posts ~project_dir posts_dir =

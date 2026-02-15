@@ -1,5 +1,11 @@
 open Containers
 
+let social_icons =
+  [
+    ("https://github.com", Resources.Icons.github);
+    ("https://t.me", Resources.Icons.telegram);
+  ]
+
 let render_blog_skeleton ?(subtitle = "") ~blog contents' =
   let open Tyxml.Html in
   let subtitle =
@@ -45,10 +51,20 @@ let render_header_avatar blog =
 
 let render_navigation blog =
   let open Tyxml.Html in
+  let render_icon url =
+    List.find_map
+      (fun (prefix, icon) ->
+        if String.starts_with ~prefix url then Some (Unsafe.data icon) else None)
+      social_icons
+  in
+
   blog.Blog.config.links
   |> List.map (fun (name, href) ->
       if String.is_empty href then span [ txt name ]
-      else a ~a:[ a_href href ] [ txt name ])
+      else
+        a
+          ~a:[ a_href href ]
+          [ txt name; render_icon href |> Option.value ~default:(txt "") ])
   |> nav
 
 let render_header blog =
@@ -131,6 +147,15 @@ let render_posts_page blog =
       render_footer blog;
     ]
 
+let render_toc ?(_max_depth = 4) post_page =
+  let open Tyxml.Html in
+  div
+    ~a:[ a_class [ "toc" ] ]
+    [
+      Omd.toc ~depth:5 post_page.Blog_page.markdown_contents
+      |> Omd.to_html |> Unsafe.data;
+    ]
+
 let render_post_page ~blog post_page =
   let open Tyxml.Html in
   let title =
@@ -169,11 +194,15 @@ let render_post_page ~blog post_page =
               div
                 ~a:[ a_style "color:gray;" ]
                 [ small [ txt post_page.metadata.synopsys ]; tags ];
-              hr ();
             ];
+          hr ();
+          (if post_page.metadata.toc then
+             div [ h4 [ txt "ToC" ]; render_toc post_page; hr () ]
+           else div []);
           div
             ~a:[ a_class [ "content" ] ]
             [ Unsafe.data (Omd.to_html post_page.markdown_contents) ];
         ];
+      render_toc post_page;
       render_footer blog;
     ]

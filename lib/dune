@@ -10,4 +10,12 @@
   (progn
    (echo "let bearneo_css = {|")
    (cat resources/bearneo.css)
-   (echo "|}"))))
+   (echo "|}\n")
+   (echo "module Icons = struct\n")
+   (echo "let github = {|")
+   (cat resources/github.icon.svg)
+   (echo "|}\n")
+   (echo "let telegram = {|")
+   (cat resources/telegram.icon.svg)
+   (echo "|}\n")
+   (echo "end"))))

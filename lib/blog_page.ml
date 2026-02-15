@@ -5,10 +5,36 @@ type metadata = {
   synopsys : string; [@default ""] [@key "description"]
   publish_date : Date_time.t; [@default Date_time.today ()]
   tags : string list; [@default []]
+  toc : bool; [@default true]
 }
 [@@deriving of_yaml]
 
 type t = { uri : string; metadata : metadata; markdown_contents : Omd.doc }
+
+let toc { markdown_contents; _ } =
+  let header_to_toc = function
+    | Omd.Heading (("id", id) :: _, depth, Omd.Text (_, title)) ->
+        Some (depth, title, id)
+    | _ -> None
+  in
+
+  let eq_depth (d, _, _) (d', _, _) = d > d' in
+
+  markdown_contents
+  |> List.filter_map header_to_toc
+  |> List.group_succ ~eq:eq_depth
+
+let update_headers_tags page =
+  let markdown_contents =
+    page.markdown_contents
+    |> List.map @@ function
+       | Omd.Heading (attrs, depth, (Omd.Text (_, title) as text)) ->
+           let id = String.replace ~sub:" " ~by:"-" title in
+           Omd.Heading (("id", id) :: attrs, depth, text)
+       | block -> block
+  in
+
+  { page with markdown_contents }
 
 let compare_by_publish_date page_a page_b =
   Date_time.compare page_a.metadata.publish_date page_b.metadata.publish_date
