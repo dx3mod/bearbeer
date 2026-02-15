@@ -203,6 +203,5 @@ let render_post_page ~blog post_page =
             ~a:[ a_class [ "content" ] ]
             [ Unsafe.data (Omd.to_html post_page.markdown_contents) ];
         ];
-      render_toc post_page;
       render_footer blog;
     ]
