@@ -16,6 +16,8 @@ let render_blog_skeleton ?(subtitle = "") ~blog contents' =
           {|<meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">|};
         link ~rel:[ `Stylesheet ] ~href:"/style.css" ();
+        Unsafe.data
+          {|<link rel="icon" type="image/x-icon" href="/favicon.ico">|};
       ]
   and body = body contents' in
 
