@@ -71,6 +71,12 @@ let normalize_links_paths ~project_dir ~posts_dir page =
           |> Fpath.to_string |> ( ^ ) "/"
         in
 
+        let destination =
+          if String.ends_with ~suffix:".md" destination then
+            Filename.remove_extension destination
+          else destination
+        in
+
         Omd.Link (attrs, { link with destination })
     | inline -> inline
   in
