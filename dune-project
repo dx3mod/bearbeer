@@ -17,4 +17,14 @@
  (name bearbeer)
  (synopsis "hackable blogging engine")
  (description "Minimal boilerplate blogging engine")
- (depends ocaml))
+ (depends
+  ocaml
+  containers
+  omd
+  fpath
+  tyxml
+  yaml
+  frontmatter_extractor
+  dream
+  cmdliner
+  diskuvbox))
