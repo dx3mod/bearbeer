@@ -43,22 +43,22 @@ let render_header_avatar blog =
            ];
        ]
 
+let render_navigation blog =
+  let open Tyxml.Html in
+  blog.Blog.config.links
+  |> List.map (fun (name, href) ->
+      if String.is_empty href then span [ txt name ]
+      else a ~a:[ a_href href ] [ txt name ])
+  |> nav
+
 let render_header blog =
   let open Tyxml.Html in
-  let nav_links =
-    blog.Blog.config.links
-    |> List.map (fun (name, href) ->
-        if String.is_empty href then span [ txt name ]
-        else a ~a:[ a_href href ] [ txt name ])
-    |> nav
-  in
-
   header
     [
       br ();
       render_header_avatar blog;
       a ~a:[ a_class [ "title" ]; a_href "/" ] [ h1 [ txt blog.config.title ] ];
-      nav_links;
+      render_navigation blog;
       hr ();
     ]
 
@@ -147,15 +147,9 @@ let render_post_page ~blog post_page =
 
   render_blog_skeleton ~subtitle:title ~blog
     [
+      render_navigation blog;
       main
         [
-          div
-            [
-              a ~a:[ a_href "/" ] [ txt "⌘" ];
-              space ();
-              space ();
-              a ~a:[ a_href "/posts" ] [ txt "⌥" ];
-            ];
           div
             [
               h1 [ txt title ];
