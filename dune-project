@@ -27,4 +27,5 @@
   frontmatter_extractor
   dream
   cmdliner
-  diskuvbox))
+  diskuvbox
+  dolog))

@@ -1,4 +1,4 @@
 (executable
  (name main)
  (public_name bearbeer)
- (libraries bearbeer dream cmdliner diskuvbox))
+ (libraries bearbeer dream cmdliner diskuvbox dolog))

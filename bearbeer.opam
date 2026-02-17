@@ -19,6 +19,7 @@ depends: [
   "dream"
   "cmdliner"
   "diskuvbox"
+  "dolog"
   "odoc" {with-doc}
 ]
 build: [
