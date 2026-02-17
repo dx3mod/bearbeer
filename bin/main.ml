@@ -33,12 +33,22 @@ module Serve = struct
            Dream.get "/posts/:name" begin fun request ->
                let post_name = Dream.param request "name" in
 
-               let blog_post =
-                 Bearbeer.Blog.find_post_by_name blog ("posts/" ^ post_name)
-               in
+               try
+                 let blog_post =
+                   Bearbeer.Blog.find_post_by_name blog ("posts/" ^ post_name)
+                 in
 
-               Bearbeer.Html_blog_render.render_post_page ~blog blog_post
-               |> html_to_string |> Dream.html
+                 Bearbeer.Html_blog_render.render_post_page ~blog blog_post
+                 |> html_to_string |> Dream.html
+               with Not_found ->
+                 Bearbeer.Html_blog_render.render_not_found blog
+                 |> html_to_string
+                 |> Dream.respond ~status:`Not_Found
+             end;
+           Dream.get "/**" begin fun _ ->
+               Bearbeer.Html_blog_render.render_not_found blog
+               |> html_to_string
+               |> Dream.respond ~status:`Not_Found
              end;
          ]
 end
@@ -69,6 +79,9 @@ module Static_site_generation = struct
     write_contents_to_file
       (output_dir // "posts.html")
       (Bearbeer.Html_blog_render.render_posts_page blog |> html_to_string);
+
+    write_contents_to_file (output_dir // "404.html")
+      (Bearbeer.Html_blog_render.render_not_found blog |> html_to_string);
 
     Diskuvbox.copy_dir
       ~src:(Fpath.v @@ (project_root_dir // "public"))

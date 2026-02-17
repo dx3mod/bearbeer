@@ -4,6 +4,7 @@ type t = {
   root_dir : Fpath.t;  (** The root project directory path. *)
   config : Blog_config.t;
   index_page : Blog_page.t;
+  not_found_page : Blog_page.t option;
   posts : Blog_page.t list;
 }
 

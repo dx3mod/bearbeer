@@ -18,4 +18,7 @@
    (echo "let telegram = {|")
    (cat resources/telegram.icon.svg)
    (echo "|}\n")
-   (echo "end"))))
+   (echo "end\n")
+   (echo "let not_found_404 = {|")
+   (cat resources/404.html)
+   (echo "|}\n"))))

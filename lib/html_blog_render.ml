@@ -93,6 +93,22 @@ let render_index_page blog =
       render_footer blog;
     ]
 
+let render_not_found blog =
+  let open Tyxml.Html in
+  render_blog_skeleton ~blog
+    [
+      render_navigation blog;
+      br ();
+      main
+        [
+          (match blog.not_found_page with
+          | Some page ->
+              Unsafe.data @@ Omd.to_html page.Blog_page.markdown_contents
+          | None -> Unsafe.data Resources.not_found_404);
+        ];
+      render_footer blog;
+    ]
+
 let render_post_item page =
   let open Tyxml.Html in
   li

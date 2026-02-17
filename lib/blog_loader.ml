@@ -39,8 +39,15 @@ let load_blog_project_from_dir root_project_dir =
   let index_page =
     load_blog_page ~project_dir:root_project_dir
     @@ Filename.concat root_project_dir' "index"
+  and not_found_page =
+    if Sys.file_exists Filename.(concat root_project_dir' "404.md") then
+      Option.some
+      @@ load_blog_page ~project_dir:root_project_dir
+      @@ Filename.concat root_project_dir' "404"
+    else None
   in
 
   let posts = load_blog_posts ~project_dir:root_project_dir config.posts_dir in
 
-  Blog.{ root_dir = root_project_dir; config; index_page; posts }
+  Blog.
+    { root_dir = root_project_dir; config; index_page; not_found_page; posts }
