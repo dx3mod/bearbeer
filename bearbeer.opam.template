@@ -1,0 +1,3 @@
+pin-depends: [
+  [ "frontmatter_extractor.dev" "git+https://github.com/dx3mod/frontmatter_extractor.git" ]
+]

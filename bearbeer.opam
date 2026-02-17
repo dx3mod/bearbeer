@@ -20,6 +20,8 @@ depends: [
   "cmdliner"
   "diskuvbox"
   "dolog"
+  "yaml"
+  "ppx_deriving_yaml"
   "odoc" {with-doc}
 ]
 build: [
@@ -38,3 +40,6 @@ build: [
 ]
 dev-repo: "git+https://github.com/dx3mod/bearbeer.git"
 x-maintenance-intent: ["(latest)"]
+pin-depends: [
+  [ "frontmatter_extractor.dev" "git+https://github.com/dx3mod/frontmatter_extractor.git" ]
+]

@@ -28,4 +28,6 @@
   dream
   cmdliner
   diskuvbox
-  dolog))
+  dolog
+  yaml
+  ppx_deriving_yaml))
