@@ -89,6 +89,11 @@ a:hover {
     font-weight: 400;
 }
 
+.avatar {
+    width: 15%;
+    float: left;
+}
+
 nav a {
     margin-right: 8px;
 }
@@ -97,10 +102,43 @@ nav span {
     color: gray;
     font-size: small;
     margin-right: 8px;
+    color: #5E5C64;
+}
+
+nav ul {
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    gap: 0px;
+}
+
+nav li .gap {
+    gap: 15px;
+}
+
+@media (max-width: 768px) {
+    nav ul {
+        flex-direction: column;
+        align-items: flex-start;
+
+    }
+
+    nav li {
+        gap: 0;
+    }
+
+    nav li span {
+        display: none;
+    }
+
+    .avatar {
+        width: 30%;
+    }
+
 }
 
 ul.tags {
-
     list-style: none;
     padding: 0;
     margin: 0;
@@ -262,11 +300,14 @@ ul.blog-posts li a:visited {
 }
 
 .toc ul {
-    list-style: square;
+    list-style: "|>  ";
+    padding-left: 5%;
+
 }
 
 .toc li::marker {
     color: rgba(128, 128, 128, 0.347);
+
 }
 
 button.upvote-btn {
@@ -319,7 +360,6 @@ body:has(.image-zoom-toggle:checked) {
     transition: transform 0.3s ease;
 }
 
-/* 放大overlay - 新建一个元素专门用于overlay */
 .image-zoom-overlay {
     display: none;
     position: fixed;
@@ -403,7 +443,6 @@ body:has(.image-zoom-toggle:checked) {
     text-align: center;
 }
 
-/* 移动设备适配 */
 @media (max-width: 800px) {
     img[src*="#minipic"] {
         max-width: 100%;

@@ -43,10 +43,7 @@ let render_header_avatar blog =
        [
          a
            ~a:[ a_href "/" ]
-           [
-             img ~a:[ a_style "width: 15%; float: left;" ] ~src ~alt:"avatar" ();
-             block;
-           ];
+           [ img ~a:[ a_class [ "avatar" ] ] ~src ~alt:"avatar" (); block ];
        ]
 
 let render_navigation blog =
@@ -54,18 +51,26 @@ let render_navigation blog =
   let render_icon url =
     List.find_map
       (fun (prefix, icon) ->
-        if String.starts_with ~prefix url then Some (Unsafe.data icon) else None)
+        if String.starts_with ~prefix url then
+          Some (sup [ small [ Unsafe.data icon ] ])
+        else None)
       social_icons
   in
 
   blog.Blog.config.links
   |> List.map (fun (name, href) ->
-      if String.is_empty href then span [ txt name ]
-      else
-        a
-          ~a:[ a_href href ]
-          [ txt name; render_icon href |> Option.value ~default:(txt "") ])
-  |> nav
+      match href with
+      | "" when String.is_empty name -> li ~a:[ a_class [ "gap" ] ] []
+      | "" -> li [ span [ txt name ] ]
+      | href ->
+          li
+            [
+              a
+                ~a:[ a_href href ]
+                [ txt name; render_icon href |> Option.value ~default:(txt "") ];
+            ])
+  |> ul
+  |> fun ul -> nav [ ul ]
 
 let render_header blog =
   let open Tyxml.Html in
